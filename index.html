@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RemitWatch — Amina's Story</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body>
+
+  <header class="top-app-bar">
+    <a href="index.html" class="brand"><span>👁️</span> Remit<strong>Watch</strong></a>
+    <div class="nav-steps">
+      <span class="active">1. The Micro Lesson</span>
+      <span>→</span>
+      <span>2. The Macro Lesson</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="split-layout">
+      
+      <section class="story-section">
+        <div class="kicker">London → Nairobi &middot; Monthly Remittance</div>
+        <h1 class="headline-large">Amina is a nurse.<br>She sends money <em>home.</em></h1>
+        <p class="body-large">She has two apps on her phone. Select the amount she needs to send, and pick the app that looks like the better deal.</p>
+
+        <div class="amount-card">
+          <strong>This month she sends:</strong>
+          <div class="segmented-button" role="group">
+            <button class="seg-btn active" onclick="setAmt(500, this)">£500</button>
+            <button class="seg-btn" onclick="setAmt(2000, this)">£2,000</button>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="send-btn" onclick="doSend()" disabled>Select an app to continue &rarr;</button>
+      </section>
+
+      <section class="apps-section">
+        <div class="app-grid">
+          
+          <div class="app-card" id="card-a" onclick="pick('a')">
+            <div class="card-header">
+              <div class="app-icon ic-sf">SF</div>
+              <div>
+                <div class="app-title">SendFree</div>
+                <div class="app-subtitle">No transfer fees. Always.</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="data-row">
+                <span class="data-label">Transfer fee</span>
+                <span class="data-value val-green">£0.00</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label">Exchange Rate</span>
+                <span class="data-value" id="a-rate">173.700 KES</span>
+              </div>
+              <div class="data-row" style="margin-top: 1rem;">
+                <span class="data-label"><strong>Mother gets</strong></span>
+                <span class="data-value large" id="a-gets">86,850 KES</span>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-outlined" id="btn-a">Choose SendFree</button>
+            </div>
+          </div>
+
+          <div class="app-card" id="card-b" onclick="pick('b')">
+            <div class="card-header">
+              <div class="app-icon ic-tg">TG</div>
+              <div>
+                <div class="app-title">TransferGo</div>
+                <div class="app-subtitle">Small fee. Real exchange rate.</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="data-row">
+                <span class="data-label">Transfer fee</span>
+                <span class="data-value val-warn" id="b-fee">£7.15</span>
+              </div>
+              <div class="data-row">
+                <span class="data-label">Exchange Rate</span>
+                <span class="data-value" id="b-rate">175.375 KES</span>
+              </div>
+              <div class="data-row" style="margin-top: 1rem;">
+                <span class="data-label"><strong>Mother gets</strong></span>
+                <span class="data-value large" id="b-gets">86,434 KES</span>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-outlined" id="btn-b">Choose TransferGo</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <div class="animation-stage" id="coin-stage">
+      <h3 id="coin-lbl">Processing Transfer...</h3>
+      <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
+      <div class="coin-grid" id="coin-grid"></div>
+    </div>
+
+    <div class="reveal-section" id="reveal">
+      <h2 class="headline-large" style="text-align: center;" id="reveal-hl">Here's what <em>actually arrived.</em></h2>
+      
+      <div class="results-grid">
+        <div class="result-card" id="rc-a">
+          <h3>SendFree <span id="rtag-a" style="font-size: 0.8rem; padding: 4px 8px; border-radius: 12px; background: #eee;"></span></h3>
+          <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--md-sys-color-outline-variant);">
+          <div class="data-row"><span class="data-label">Mother receives</span><span class="data-value large" id="ra-val">—</span></div>
+          <div class="data-row"><span class="data-label">Transfer fee</span><span class="data-value val-green">£0.00</span></div>
+          <div class="data-row"><span class="data-label">Hidden FX margin</span><span class="data-value val-red" id="ra-fx">—</span></div>
+          <div class="data-row"><span class="data-label"><strong>Real total cost</strong></span><span class="data-value" id="ra-pct">—</span></div>
+        </div>
+        
+        <div class="result-card" id="rc-b">
+          <h3>TransferGo <span id="rtag-b" style="font-size: 0.8rem; padding: 4px 8px; border-radius: 12px; background: #eee;"></span></h3>
+          <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--md-sys-color-outline-variant);">
+          <div class="data-row"><span class="data-label">Mother receives</span><span class="data-value large" id="rb-val">—</span></div>
+          <div class="data-row"><span class="data-label">Transfer fee</span><span class="data-value val-red" id="rb-fee">—</span></div>
+          <div class="data-row"><span class="data-label">Hidden FX margin</span><span class="data-value val-green">£0.00</span></div>
+          <div class="data-row"><span class="data-label"><strong>Real total cost</strong></span><span class="data-value" id="rb-pct">—</span></div>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <h3 id="ins-title" style="margin-bottom: 0.5rem;"></h3>
+        <p id="ins-body"></p>
+      </div>
+
+      <div class="next-step-banner">
+        <h2>Is this just Amina's problem?</h2>
+        <p class="body-large" style="margin: 1rem auto;">Millions of families across Sub-Saharan Africa face this exact system every month. The World Bank has been tracking it for years.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button class="btn-outlined" style="width: auto; padding: 12px 24px;" onclick="resetAll()">↺ Try the other amount</button>
+          <a href="page2.html" class="btn-primary" style="width: auto; padding: 12px 32px; text-decoration: none; display: inline-block;">See the global data &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const MID = 175.375, A_RATE = 173.700;
+    const FEES = { 500: { fee: 7.15 }, 2000: { fee: 14.50 } };
+    let amt = 500, picked = null, sending = false;
+
+    function fmt(n) { return Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 }) }
+    function calcA(a) { return { gets: Math.round(a * A_RATE), fxLoss: +(a - a * A_RATE / MID).toFixed(2), pct: +((1 - A_RATE / MID) * 100).toFixed(2) } }
+    function calcB(a) { const f = FEES[a] || FEES[500]; return { gets: Math.round((a - f.fee) * MID), fee: f.fee, pct: +(f.fee / a * 100).toFixed(2) } }
+
+    function updateCards() {
+      const a = calcA(amt), b = calcB(amt);
+      document.getElementById('a-rate').textContent = A_RATE.toFixed(3) + ' KES';
+      document.getElementById('a-gets').textContent = fmt(a.gets) + ' KES';
+      document.getElementById('b-fee').textContent = '£' + (FEES[amt] || FEES[500]).fee.toFixed(2);
+      document.getElementById('b-rate').textContent = MID.toFixed(3) + ' KES';
+      document.getElementById('b-gets').textContent = fmt(b.gets) + ' KES';
+    }
+
+    function setAmt(v, btn) {
+      if (sending) return;
+      amt = v;
+      document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateCards(); resetAll();
+    }
+
+    function pick(id) {
+      if (sending) return;
+      picked = id;
+      document.querySelectorAll('.app-card').forEach(c => {
+        c.classList.remove('selected');
+        c.querySelector('.btn-outlined').textContent = c.id === 'card-a' ? 'Choose SendFree' : 'Choose TransferGo';
+      });
+      document.getElementById('card-' + id).classList.add('selected');
+      document.getElementById('btn-' + id).textContent = '✓ Selected';
+      
+      const sb = document.getElementById('send-btn');
+      sb.disabled = false;
+      sb.textContent = 'Send £' + fmt(amt) + ' with ' + (id === 'a' ? 'SendFree' : 'TransferGo') + ' →';
+      document.getElementById('reveal').classList.remove('show');
+    }
+
+    function buildCoins(total, lost) {
+      const grid = document.getElementById('coin-grid');
+      grid.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const c = document.createElement('div');
+        c.className = 'coin ' + (i < total - lost ? 'safe' : 'lost');
+        c.textContent = '£'; c.id = 'coin-' + i;
+        grid.appendChild(c);
+      }
+    }
+
+    function doSend() {
+      if (!picked || sending) return;
+      sending = true;
+      document.getElementById('send-btn').disabled = true;
+      document.getElementById('card-a').classList.add('dimmed');
+      document.getElementById('card-b').classList.add('dimmed');
+      document.getElementById('card-' + picked).classList.remove('dimmed');
+
+      const a = calcA(amt), b = calcB(amt);
+      const pickedA = picked === 'a';
+      const totalCost = pickedA ? a.fxLoss : b.fee;
+      const totalCoins = 20;
+      const lostCoins = Math.max(1, Math.round((totalCost / amt) * totalCoins));
+
+      buildCoins(totalCoins, lostCoins);
+      const stage = document.getElementById('coin-stage');
+      stage.classList.add('show');
+      stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const bar = document.getElementById('prog-bar');
+      const lbl = document.getElementById('coin-lbl');
+      let progress = 0, lostSoFar = 0;
+      const steps = 2000 / 50;
+      lbl.textContent = 'Transferring £' + fmt(amt) + '...';
+
+      const timer = setInterval(() => {
+        progress = Math.min(progress + 100 / steps, 100);
+        bar.style.width = progress.toFixed(1) + '%';
+        const shouldLose = Math.floor(Math.max(0, (progress - 30) / 60) * lostCoins);
+        while (lostSoFar < shouldLose && lostSoFar < lostCoins) {
+          const el = document.getElementById('coin-' + (totalCoins - 1 - lostSoFar));
+          if (el) el.classList.add('gone');
+          lostSoFar++;
+        }
+        if (progress >= 100) { clearInterval(timer); setTimeout(() => showReveal(a, b, pickedA, lostCoins), 500); }
+      }, 50);
+    }
+
+    function showReveal(a2, b2, pickedA, lostCoins) {
+      const lbl = document.getElementById('coin-lbl');
+      lbl.textContent = pickedA ? lostCoins + ' coins never arrived — absorbed by the exchange rate margin.' : 'Sent! The fee was upfront. The rate was real.';
+
+      document.getElementById('ra-val').textContent = fmt(a2.gets) + ' KES';
+      document.getElementById('rb-val').textContent = fmt(b2.gets) + ' KES';
+      document.getElementById('ra-fx').textContent = '−£' + a2.fxLoss.toFixed(2);
+      document.getElementById('ra-pct').textContent = a2.pct.toFixed(1) + '%';
+      document.getElementById('rb-fee').textContent = '−£' + b2.fee.toFixed(2);
+      document.getElementById('rb-pct').textContent = b2.pct.toFixed(1) + '%';
+
+      const aWins = a2.gets > b2.gets;
+      document.getElementById('rc-a').className = 'result-card' + (aWins ? ' winner' : '');
+      document.getElementById('rc-b').className = 'result-card' + (!aWins ? ' winner' : '');
+      document.getElementById('ra-val').className = 'data-value large ' + (aWins ? 'val-green' : 'val-red');
+      document.getElementById('rb-val').className = 'data-value large ' + (!aWins ? 'val-green' : 'val-red');
+
+      const diff = fmt(Math.abs(b2.gets - a2.gets));
+      const userWon = (pickedA && aWins) || (!pickedA && !aWins);
+
+      const rtagA = document.getElementById('rtag-a');
+      const rtagB = document.getElementById('rtag-b');
+      rtagA.textContent = (aWins ? 'Delivered more' : 'Delivered less') + (pickedA ? ' (Your Pick)' : '');
+      rtagB.textContent = (!aWins ? 'Delivered more' : 'Delivered less') + (!pickedA ? ' (Your Pick)' : '');
+
+      document.getElementById('reveal-hl').innerHTML = userWon
+        ? 'Good instinct. Here\'s <em>exactly why.</em>'
+        : 'The math flips as you scale. <em>Here\'s why.</em>';
+      document.getElementById('ins-title').textContent = aWins
+        ? 'At smaller amounts, "zero-fee" apps can sometimes win.'
+        : 'The real exchange rate beats zero fees — especially at scale.';
+      document.getElementById('ins-body').innerHTML =
+        `SendFree shows <strong>£0 fee</strong> but offers a weak rate of <strong>${A_RATE.toFixed(3)} KES</strong>. 
+         TransferGo charges <strong>£${b2.fee.toFixed(2)} upfront</strong> but uses the real market rate of <strong>${MID.toFixed(3)} KES</strong>. 
+         <br><br>At £${fmt(amt)}, the difference in outcome is <strong>${diff} KES</strong>. Try toggling the amount above to see the gap widen as you send more.`;
+
+      document.getElementById('reveal').classList.add('show');
+      setTimeout(() => document.getElementById('reveal').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+    }
+
+    function resetAll() {
+      sending = false; picked = null;
+      document.querySelectorAll('.app-card').forEach(c => {
+        c.classList.remove('selected', 'dimmed');
+        c.querySelector('.btn-outlined').textContent = c.id === 'card-a' ? 'Choose SendFree' : 'Choose TransferGo';
+      });
+      const sb = document.getElementById('send-btn');
+      sb.disabled = true; sb.textContent = 'Select an app to continue →';
+      document.getElementById('coin-stage').classList.remove('show');
+      document.getElementById('coin-grid').innerHTML = '';
+      document.getElementById('prog-bar').style.width = '0%';
+      document.getElementById('reveal').classList.remove('show');
+    }
+    updateCards();
+  </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RemitWatch — The Global Data</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── CASCADING "DOWN & RIGHT" ANIMATION SYSTEM ── */
+    
+    .slideshow-container {
+      padding: 4rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow-x: hidden; /* Prevents horizontal scrollbar from animations */
+    }
+
+    .slide-step {
+      margin-bottom: 8rem;
+      /* Initial state: Hidden, shifted up and left */
+      opacity: 0;
+      transform: translate(-80px, -80px); 
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                  transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .slide-step.visible {
+      /* Final state: Visible, moved down and right into place */
+      opacity: 1;
+      transform: translate(0, 0); 
+    }
+
+    /* Create the "staircase" cascading effect on desktop */
+    @media (min-width: 1000px) {
+      .slide-step:nth-child(1) { width: 80%; margin-left: 0; }
+      .slide-step:nth-child(2) { width: 80%; margin-left: 5%; }
+      .slide-step:nth-child(3) { width: 80%; margin-left: 10%; }
+      .slide-step:nth-child(4) { width: 80%; margin-left: 15%; }
+      .slide-step:nth-child(5) { width: 80%; margin-left: 20%; }
+    }
+
+    /* Minimalist Typography for less reading, more looking */
+    .insight-tag {
+      display: inline-block;
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      font-family: var(--font-brand);
+    }
+    .punchy-text {
+      font-size: 1.25rem;
+      color: var(--md-sys-color-on-surface-variant);
+      max-width: 60ch;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-app-bar">
+    <a href="index.html" class="brand"><span>👁️</span> Remit<strong>Watch</strong></a>
+    <div class="nav-steps">
+      <a href="index.html" style="color: var(--md-sys-color-on-surface-variant); text-decoration: none;">&larr; 1. The Micro Lesson</a>
+      <span>→</span>
+      <span class="active">2. The Macro Lesson</span>
+    </div>
+  </header>
+
+  <main class="slideshow-container">
+
+    <div class="slide-step visible">
+      <div class="insight-tag">The Scale of the Problem</div>
+      <h1 class="headline-large">Amina's missing money isn't a glitch.<br><em>It's a global system.</em></h1>
+      <p class="punchy-text">Millions of families lose billions to hidden margins and high fees. Let's let the World Bank data show exactly where the money goes.</p>
+    </div>
+
+    <div class="slide-step">
+      <div class="insight-tag">01 / The Providers</div>
+      <h2 class="block-title">Banks charge 3× more than mobile apps.</h2>
+      <p class="punchy-text">Just like SendFree hid its fee in a bad exchange rate, traditional commercial banks average an <strong>8.3% global cost</strong>. Mobile operators sit near <strong>3.1%</strong>.</p>
+      
+      <div class="chart-container">
+        <div class="chart-iframe-wrapper">
+          <iframe src="https://public.tableau.com/views/Book1_17777798762820/MTOscheaper?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="420" title="Average Cost by Provider"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-step">
+      <div class="insight-tag">02 / Amina's Route</div>
+      <h2 class="block-title">Brand names mean higher fees.</h2>
+      <p class="punchy-text">We made up our apps on page one, but here is the real UK → Kenya data. Transparent apps cost ~1%. Legacy giants like Western Union sit over 8%.</p>
+
+      <div class="chart-container">
+        <div class="chart-iframe-wrapper">
+          <iframe src="https://public.tableau.com/views/Book1_17777798762820/Uk-providers-to-Kenya?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="580" title="UK to Kenya Providers"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-step">
+      <div class="insight-tag">03 / The Global Toll</div>
+      <h2 class="block-title">Sub-Saharan Africa pays the highest tax on earth.</h2>
+      <p class="punchy-text">The UN target is 3%. Sub-Saharan Africa averages <strong>11.5%</strong>. This system drains capital directly from the communities that need it most.</p>
+
+      <div class="chart-container">
+        <div class="chart-iframe-wrapper">
+          <iframe src="https://public.tableau.com/views/Book1_17777798762820/regioncostsmore?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="440" title="Average Cost by Region"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-step">
+      <div class="insight-tag">04 / Global Inequality</div>
+      <h2 class="block-title">Where you send <em>from</em> dictates the price.</h2>
+      <p class="punchy-text">Amina's UK-to-Kenya route is competitive. But look at other countries sending into Kenya. A fair remittance system requires global, not just regional, transparency.</p>
+
+      <div class="chart-container">
+        <div class="chart-iframe-wrapper">
+          <iframe src="https://public.tableau.com/views/Book1_17777798762820/sendingtokenya?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="580" title="Sending to Kenya"></iframe>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer" style="text-align: center; padding: 4rem 2rem;">
+    <p>Data Source: World Bank Remittance Prices Worldwide (RPW)</p>
+    <br>
+    <a href="index.html" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto; padding: 12px 32px;">&larr; Return to Amina's Story</a>
+  </footer>
+
+  <script>
+    // Slide-in Observer: Triggers when the element enters the viewport
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add the visible class to trigger the down-and-right animation
+          entry.target.classList.add('visible');
+          // Optional: Stop observing once it's visible so it doesn't animate out
+          observer.unobserve(entry.target); 
+        }
+      });
+    }, { 
+      threshold: 0.15, // Triggers when 15% of the card is visible
+      rootMargin: "0px 0px -50px 0px" // Triggers slightly before it hits the bottom
+    });
+
+    document.querySelectorAll('.slide-step').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
