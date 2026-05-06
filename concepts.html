@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RemitWatch — The Macro Zoom Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --md-sys-color-background: #0F141A;
+    --md-sys-color-on-background: #E2E2E9;
+    --md-sys-color-surface: #161C24;
+    --md-sys-color-surface-container: #1A212A;
+    --md-sys-color-surface-container-high: #242D38;
+    
+    --md-sys-color-primary: #7CF4B6;
+    --md-sys-color-primary-container: #17382B;
+    --md-sys-color-primary-track: #1C2731;
+    
+    --md-sys-color-secondary: #A9B2BB;
+    --md-sys-color-on-surface-variant: #9EA8B3;
+    
+    --md-sys-color-tertiary: #FFC182;
+    --md-sys-color-tertiary-container: #4A3014;
+    
+    --md-sys-color-error: #FFA49D;
+    --md-sys-color-error-container: #4D1A18;
+
+    --md-sys-color-coin: #FFD15C;
+    --md-sys-color-coin-edge: #C29618;
+    --md-sys-color-coin-text: #4D3800;
+    
+    --md-sys-elevation-2: 0px 4px 12px rgba(0, 0, 0, 0.4), 0px 1px 3px rgba(0, 0, 0, 0.2);
+    --md-sys-motion-standard: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --md-sys-motion-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    font-family: 'Roboto', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .grid-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: radial-gradient(var(--md-sys-color-surface-container-high) 1px, transparent 1px);
+    background-size: 40px 40px; opacity: 0.4; pointer-events: none; z-index: 0;
+  }
+
+  /* Extra bottom padding ensures user can scroll far enough to easily trigger the zoom out */
+  .snake-environment {
+    position: relative;
+    width: 100%;
+    padding: 50vh 0 120vh 0; 
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .canvas {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 1 / 3; 
+    transition: transform 1.4s var(--md-sys-motion-bounce);
+    transform-origin: center 92%; /* Scales around the destination vault */
+  }
+
+  /* Macro-Zoom Effect */
+  .canvas.zoomed-out {
+    transform: scale(0.38);
+  }
+
+  .river-svg {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .coin { fill: var(--md-sys-color-coin); stroke: var(--md-sys-color-coin-edge); stroke-width: 2; transition: opacity 0.3s ease; }
+  
+  .leaked-coin {
+    opacity: 0;
+    transition: transform 1s var(--md-sys-motion-decelerate), opacity 0.6s ease;
+  }
+  .leaked-coin.leak-vis { opacity: 1; transform: translateY(70px); }
+
+  .payload-survivor { transition: transform 0.6s var(--md-sys-motion-bounce), opacity 0.4s ease; }
+  #payload.deposited .payload-survivor { transform: translate(0px, 0px) scale(0) !important; opacity: 0; }
+
+  /* Giant Final Coin */
+  .final-master-coin {
+    opacity: 0; transform: scale(0.3); transform-origin: 400px 2200px;
+    transition: opacity 0.3s ease, transform 0.8s var(--md-sys-motion-bounce);
+  }
+  .final-master-coin.vis { opacity: 1; transform: scale(2.6); }
+
+  .svg-drain {
+    opacity: 0; transform: scale(0.5);
+    transition: opacity 0.5s var(--md-sys-motion-standard), transform 0.8s var(--md-sys-motion-decelerate);
+  }
+  .svg-drain.vis { opacity: 1; transform: scale(1); }
+
+  .desktop-connector {
+    stroke-dasharray: 4,4; opacity: 0; transition: opacity 0.6s ease 0.3s;
+  }
+  .svg-drain.vis .desktop-connector, .final-master-coin.vis + .desktop-connector { opacity: 1; }
+
+  /* Cards */
+  .beat { position: absolute; width: 0; height: 0; z-index: 3; transition: opacity 0.5s ease; }
+  .card-wrapper { position: absolute; width: 300px; top: 50%; }
+
+  .align-right { left: 90px; transform: translateY(-50%); }
+  .align-left { right: 90px; transform: translateY(-50%); }
+
+  .beat-card {
+    background-color: var(--md-sys-color-surface-container);
+    border-radius: 20px; padding: 24px;
+    box-shadow: var(--md-sys-elevation-2);
+    border: 1px solid var(--md-sys-color-surface-container-high);
+    opacity: 0; transform: scaleY(0.9) translateY(20px);
+    transition: opacity 0.6s var(--md-sys-motion-standard), transform 0.6s var(--md-sys-motion-decelerate);
+  }
+  .beat.vis .beat-card { opacity: 1; transform: scaleY(1) translateY(0); }
+
+  /* Zoom UI Adjustments */
+  .canvas.zoomed-out .hide-on-zoom { opacity: 0; pointer-events: none; }
+  .canvas.zoomed-out .final-card-wrapper { transform: scale(2.2) translate(-20px, 40px); transform-origin: left center; }
+
+  .reveal-item { opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .beat.vis .reveal-item { opacity: 1; transform: translateY(0); }
+  .beat.vis .delay-1 { transition-delay: 0.1s; }
+  .beat.vis .delay-2 { transition-delay: 0.25s; }
+  .beat.vis .delay-3 { transition-delay: 0.4s; }
+
+  /* Typography */
+  .md-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+  .md-headline { font-size: 20px; font-weight: 400; color: var(--md-sys-color-on-background); line-height: 1.3; margin-bottom: 12px; }
+  .md-headline em { color: var(--md-sys-color-primary); font-style: normal; font-weight: 700; }
+  .md-body { font-size: 14px; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; }
+  .md-body strong { color: var(--md-sys-color-on-background); font-weight: 500; }
+
+  .md-chip {
+    display: inline-flex; align-items: center; font-size: 11px; font-weight: 500;
+    padding: 6px 14px; border-radius: 20px; margin-top: 16px;
+  }
+  
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--md-sys-color-primary); color: #04342C; text-decoration: none;
+    font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 30px;
+    margin-top: 20px; width: 100%; transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+
+  .chip-amber { background-color: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-tertiary); }
+  .chip-error { background-color: var(--md-sys-color-error-container); color: var(--md-sys-color-error); }
+  .chip-blue { background-color: #0D2140; color: #82B4FF; } 
+
+  /* Flags clearly positioned outside the canvas loop */
+  .geo-flag {
+    position: absolute; font-size: 32px; z-index: 5;
+    background: var(--md-sys-color-surface-container);
+    border-radius: 50%; width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--md-sys-elevation-2); border: 2px solid var(--md-sys-color-surface-container-high);
+  }
+  .flag-start { top: 4.16%; left: -10%; transform: translateY(-50%); }
+  .flag-end { top: 91.66%; right: -10%; transform: translateY(-50%); }
+
+  .m3-progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: var(--md-sys-color-background); z-index: 100; }
+  .m3-progress-bar { height: 100%; width: 0%; background: var(--md-sys-color-primary); }
+
+  @media (max-width: 800px) {
+    .desktop-connector { display: none; }
+    .geo-flag { display: none; } 
+    .card-wrapper { left: 50%; right: auto; transform: translate(-50%, 60px); }
+    .canvas.zoomed-out { transform: scale(0.42); }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+<div class="m3-progress-container"><div class="m3-progress-bar" id="progress-bar"></div></div>
+
+<div class="snake-environment">
+  <div class="canvas" id="canvas">
+
+    <svg class="river-svg" viewBox="0 0 800 2400" id="river">
+      <defs>
+        <g id="pound-coin">
+          <circle cx="0" cy="0" r="14" fill="var(--md-sys-color-coin)" stroke="var(--md-sys-color-coin-edge)" stroke-width="2.5"/>
+          <text x="0" y="5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--md-sys-color-coin-text)">£</text>
+        </g>
+        
+        <marker id="arrow-right-tertiary" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--md-sys-color-tertiary)" />
+        </marker>
+        <marker id="arrow-right-error" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--md-sys-color-error)" />
+        </marker>
+        <marker id="arrow-left-error" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 10 0 L 0 5 L 10 10 z" fill="var(--md-sys-color-error)" />
+        </marker>
+        <marker id="arrow-right-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#82B4FF" />
+        </marker>
+        <marker id="arrow-right-primary" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--md-sys-color-primary)" />
+        </marker>
+      </defs>
+
+      <path id="river-track"
+        d="M 400 100 L 400 200 C 400 300, 600 300, 600 400 C 600 500, 400 500, 400 600 L 400 700 C 400 800, 200 800, 200 900 C 200 1000, 400 1000, 400 1100 L 400 1200 C 400 1300, 600 1300, 600 1400 C 600 1500, 400 1500, 400 1600 L 400 1700 C 400 1800, 200 1800, 200 1900 C 200 2000, 400 2000, 400 2100 L 400 2200"
+        fill="none" stroke="var(--md-sys-color-primary-track)" stroke-width="50" stroke-linecap="round"
+      />
+
+      <path id="river-main"
+        d="M 400 100 L 400 200 C 400 300, 600 300, 600 400 C 600 500, 400 500, 400 600 L 400 700 C 400 800, 200 800, 200 900 C 200 1000, 400 1000, 400 1100 L 400 1200 C 400 1300, 600 1300, 600 1400 C 600 1500, 400 1500, 400 1600 L 400 1700 C 400 1800, 200 1800, 200 1900 C 200 2000, 400 2000, 400 2100 L 400 2200"
+        fill="none" stroke="var(--md-sys-color-primary)" stroke-width="24" stroke-linecap="round"
+      />
+
+      <circle cx="400" cy="100" r="28" fill="var(--md-sys-color-primary-container)" stroke="var(--md-sys-color-primary)" stroke-width="4"/>
+      
+      <line x1="372" y1="100" x2="300" y2="100" stroke="var(--md-sys-color-primary)" stroke-width="2" stroke-dasharray="4,4" opacity="0.5"/>
+      <line x1="428" y1="2200" x2="500" y2="2200" stroke="var(--md-sys-color-primary)" stroke-width="2" stroke-dasharray="4,4" opacity="0.5"/>
+
+      <g class="svg-drain" id="drain-1" style="transform-origin: 600px 400px;">
+        <line x1="600" y1="400" x2="600" y2="470" stroke="var(--md-sys-color-tertiary)" stroke-width="4" stroke-dasharray="6,6" />
+        <circle cx="600" cy="470" r="14" fill="var(--md-sys-color-background)" stroke="var(--md-sys-color-tertiary)" stroke-width="4"/>
+        <g style="transform: translate(600px, 400px);"><use href="#pound-coin" class="leaked-coin" id="leak-coin-1" /></g>
+        <line class="desktop-connector" x1="620" y1="400" x2="680" y2="400" stroke="var(--md-sys-color-tertiary)" stroke-width="2" marker-end="url(#arrow-right-tertiary)" />
+      </g>
+
+      <g class="svg-drain" id="drain-2" style="transform-origin: 200px 900px;">
+        <line x1="200" y1="900" x2="200" y2="970" stroke="var(--md-sys-color-error)" stroke-width="4" stroke-dasharray="6,6" />
+        <circle cx="200" cy="970" r="14" fill="var(--md-sys-color-background)" stroke="var(--md-sys-color-error)" stroke-width="4"/>
+        <g style="transform: translate(200px, 900px);"><use href="#pound-coin" class="leaked-coin" id="leak-coin-2" /></g>
+        <line class="desktop-connector" x1="180" y1="900" x2="120" y2="900" stroke="var(--md-sys-color-error)" stroke-width="2" marker-end="url(#arrow-left-error)" />
+      </g>
+
+      <g class="svg-drain" id="drain-3" style="transform-origin: 600px 1400px;">
+        <line x1="600" y1="1400" x2="600" y2="1470" stroke="#82B4FF" stroke-width="4" stroke-dasharray="6,6" />
+        <circle cx="600" cy="1470" r="14" fill="var(--md-sys-color-background)" stroke="#82B4FF" stroke-width="4"/>
+        <g style="transform: translate(600px, 1400px);"><use href="#pound-coin" class="leaked-coin" id="leak-coin-3" /></g>
+        <line class="desktop-connector" x1="620" y1="1400" x2="680" y2="1400" stroke="#82B4FF" stroke-width="2" marker-end="url(#arrow-right-blue)" />
+      </g>
+
+      <g class="svg-drain" id="drain-4" style="transform-origin: 200px 1900px;">
+        <line x1="200" y1="1900" x2="200" y2="1970" stroke="var(--md-sys-color-error)" stroke-width="4" stroke-dasharray="6,6" />
+        <circle cx="200" cy="1970" r="14" fill="var(--md-sys-color-background)" stroke="var(--md-sys-color-error)" stroke-width="4"/>
+        <g style="transform: translate(200px, 1900px);"><use href="#pound-coin" class="leaked-coin" id="leak-coin-4" /></g>
+        <line class="desktop-connector" x1="180" y1="1900" x2="120" y2="1900" stroke="var(--md-sys-color-error)" stroke-width="2" marker-end="url(#arrow-left-error)" />
+      </g>
+      
+      <circle cx="400" cy="2200" r="46" fill="var(--md-sys-color-primary-container)" stroke="var(--md-sys-color-primary)" stroke-width="4" stroke-dasharray="8,8"/>
+      
+      <g id="final-master-coin" class="final-master-coin">
+        <circle cx="400" cy="2200" r="32" fill="var(--md-sys-color-coin)" stroke="var(--md-sys-color-coin-edge)" stroke-width="4"/>
+        <text x="400" y="2210" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="800" fill="var(--md-sys-color-coin-text)">£479</text>
+      </g>
+
+      <line class="desktop-connector" x1="456" y1="2200" x2="480" y2="2200" stroke="var(--md-sys-color-primary)" stroke-width="2" marker-end="url(#arrow-right-primary)" />
+
+      <g id="payload">
+        <use href="#pound-coin" id="payload-coin-1" style="transform: translate(-16px, -16px)"/>
+        <use href="#pound-coin" id="payload-coin-2" style="transform: translate(16px, -16px)"/>
+        <use href="#pound-coin" id="payload-coin-3" style="transform: translate(-16px, 16px)"/>
+        <use href="#pound-coin" id="payload-coin-4" style="transform: translate(16px, 16px)"/>
+        <use href="#pound-coin" class="payload-survivor" style="transform: translate(0px, -24px)"/>
+        <use href="#pound-coin" class="payload-survivor" style="transform: translate(0px, 24px)"/>
+        <use href="#pound-coin" class="payload-survivor" style="transform: translate(-24px, 0px)"/>
+        <use href="#pound-coin" class="payload-survivor" style="transform: translate(24px, 0px)"/>
+      </g>
+    </svg>
+
+    <div class="geo-flag flag-start">🇬🇧</div>
+    <div class="geo-flag flag-end">🇰🇪</div>
+
+    <div class="beat vis hide-on-zoom" style="left: 50%; top: 4.16%;">
+      <div class="card-wrapper align-left" style="right: 50px;">
+        <div class="beat-card" style="border: 1px solid var(--md-sys-color-primary);">
+          <span class="md-label" style="color: var(--md-sys-color-primary);">London → Nairobi</span>
+          <div class="md-headline reveal-item delay-1">Amina is a nurse.<br>She sends money <em>home.</em></div>
+          <div class="md-body reveal-item delay-2">She sends £500. Eight coins enter the pipeline. Four possible places they can leak before Nairobi. Scroll to follow the money.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat hide-on-zoom" style="left: 75%; top: 16.66%;" data-drain="drain-1" data-leak="1" data-trigger-x="600" data-trigger-y="400">
+      <div class="card-wrapper align-right">
+        <div class="beat-card">
+          <span class="md-label reveal-item delay-1" style="color: var(--md-sys-color-tertiary)">Leak 01 · Transfer fee</span>
+          <div class="md-headline reveal-item delay-2">The fee you <em>can see.</em></div>
+          <div class="md-body reveal-item delay-3">Shown before you press Send. TransferGo charges <strong>£7.15</strong>. SendFree shows £0 — but keep scrolling.</div>
+          <div class="md-chip chip-amber reveal-item delay-3">Visible — shown upfront</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat hide-on-zoom" style="left: 25%; top: 37.50%;" data-drain="drain-2" data-leak="2" data-trigger-x="200" data-trigger-y="900">
+      <div class="card-wrapper align-left">
+        <div class="beat-card">
+          <span class="md-label reveal-item delay-1" style="color: var(--md-sys-color-error)">Leak 02 · FX margin</span>
+          <div class="md-headline reveal-item delay-2">The fee <em>hiding</em> in the rate.</div>
+          <div class="md-body reveal-item delay-3">Real rate: <strong>175.375 KES</strong>. Provider gives: <strong>173.700 KES</strong>. That hidden gap costs Amina <strong>£4.78</strong>. Invisible on screen.</div>
+          <div class="md-chip chip-error reveal-item delay-3">Hidden — buried in rate</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat hide-on-zoom" style="left: 75%; top: 58.33%;" data-drain="drain-3" data-leak="3" data-trigger-x="600" data-trigger-y="1400">
+      <div class="card-wrapper align-right">
+        <div class="beat-card">
+          <span class="md-label reveal-item delay-1" style="color: #82B4FF">Leak 03 · Correspondent fee</span>
+          <div class="md-headline reveal-item delay-2">Charged <em>between</em> banks.</div>
+          <div class="md-body reveal-item delay-3">Banks routing the transfer charge each other a toll. Neither Amina nor her mother sees it. <strong>Silently reduces the amount.</strong></div>
+          <div class="md-chip chip-blue reveal-item delay-3">Hidden — between banks</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat hide-on-zoom" style="left: 25%; top: 79.16%;" data-drain="drain-4" data-leak="4" data-trigger-x="200" data-trigger-y="1900">
+      <div class="card-wrapper align-left">
+        <div class="beat-card">
+          <span class="md-label reveal-item delay-1" style="color: var(--md-sys-color-error)">Leak 04 · Receiving fee</span>
+          <div class="md-headline reveal-item delay-2">Charged <em>on arrival.</em></div>
+          <div class="md-body reveal-item delay-3">Some providers deduct a cut when the money is collected in Nairobi. Happens <strong>after</strong> Amina pressed Send. She never saw it coming.</div>
+          <div class="md-chip chip-error reveal-item delay-3">Sometimes hidden</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat" style="left: 50%; top: 91.66%;" data-trigger-x="400" data-trigger-y="2200">
+      <div class="card-wrapper align-right final-card-wrapper" style="left: 90px; transition: transform 1.4s var(--md-sys-motion-bounce);">
+        <div class="beat-card" style="border: 2px solid var(--md-sys-color-primary);">
+          <span class="md-label reveal-item delay-1" style="color: var(--md-sys-color-primary);">Nairobi · Arrived</span>
+          <div class="md-headline reveal-item delay-2">Here's what <em>actually arrived.</em></div>
+          <div class="md-body reveal-item delay-3">≈ £479 reaches mother. £21 lost across four leaks. The UN says max £15. Commercial banks charge <strong>3× more.</strong></div>
+          <a href="page2.html" class="btn-primary reveal-item delay-3">See the global data →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const path = document.getElementById('river-main');
+  const pathLength = path.getTotalLength();
+  path.style.strokeDasharray = pathLength;
+  path.style.strokeDashoffset = pathLength;
+
+  const svgCanvas = document.getElementById('canvas');
+  const progressBar = document.getElementById('progress-bar');
+  const payloadGroup = document.getElementById('payload');
+  const finalMasterCoin = document.getElementById('final-master-coin');
+  const beats = document.querySelectorAll('.beat');
+
+  const pCoins = [
+    document.getElementById('payload-coin-1'),
+    document.getElementById('payload-coin-2'),
+    document.getElementById('payload-coin-3'),
+    document.getElementById('payload-coin-4')
+  ];
+
+  let leaksTriggered = { 1: false, 2: false, 3: false, 4: false };
+  let isDeposited = false;
+  let rafId = null;
+
+  function handleScroll() {
+    const rect = svgCanvas.getBoundingClientRect();
+    const startTrigger = window.innerHeight / 2;
+    
+    // Calculates how far the user has scrolled down the SVG Canvas
+    let progress = (startTrigger - rect.top) / rect.height;
+    if (progress < 0) progress = 0;
+    if (progress > 1) progress = 1;
+
+    const docScroll = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    progressBar.style.width = `${docScroll * 100}%`;
+
+    const currentDrawLength = pathLength * progress;
+    path.style.strokeDashoffset = Math.max(0, pathLength - currentDrawLength);
+
+    const tipPoint = path.getPointAtLength(currentDrawLength);
+    
+    if (!isDeposited) {
+      payloadGroup.setAttribute('transform', `translate(${tipPoint.x}, ${tipPoint.y})`);
+    }
+
+    beats.forEach(beat => {
+      const tx = parseInt(beat.getAttribute('data-trigger-x'));
+      const ty = parseInt(beat.getAttribute('data-trigger-y'));
+      if (isNaN(tx) || isNaN(ty)) return;
+
+      const drainId = beat.getAttribute('data-drain');
+      const leakId = beat.getAttribute('data-leak');
+      const dist = Math.hypot(tipPoint.x - tx, tipPoint.y - ty);
+
+      if (dist < 120 || (progress > 0.05 && tipPoint.y > ty)) {
+        beat.classList.add('vis');
+        if (drainId && document.getElementById(drainId)) {
+          document.getElementById(drainId).classList.add('vis');
+        }
+
+        if (leakId && !leaksTriggered[leakId]) {
+          leaksTriggered[leakId] = true;
+          if(pCoins[leakId-1]) pCoins[leakId-1].style.opacity = '0'; 
+          
+          const leakCoin = document.getElementById(`leak-coin-${leakId}`);
+          if (leakCoin) leakCoin.classList.add('leak-vis');
+        }
+      } else {
+        beat.classList.remove('vis');
+        if (drainId && document.getElementById(drainId)) {
+          document.getElementById(drainId).classList.remove('vis');
+        }
+        
+        if (leakId && leaksTriggered[leakId]) {
+           leaksTriggered[leakId] = false;
+           if(pCoins[leakId-1]) pCoins[leakId-1].style.opacity = '1';
+           const leakCoin = document.getElementById(`leak-coin-${leakId}`);
+           if (leakCoin) leakCoin.classList.remove('leak-vis');
+        }
+      }
+    });
+
+    // --- THE MACRO ZOOM REVEAL LOGIC ---
+    // Triggered just before the final point
+    if (tipPoint.y >= 2190 && !isDeposited) {
+        isDeposited = true;
+        
+        // 1. Lock payload into vault
+        payloadGroup.setAttribute('transform', `translate(400, 2200)`);
+        payloadGroup.classList.add('deposited');
+        
+        // 2. Expand massive final coin
+        finalMasterCoin.classList.add('vis');
+        
+        // 3. ZOOM OUT the entire canvas
+        svgCanvas.classList.add('zoomed-out');
+        
+    } else if (tipPoint.y < 2190 && isDeposited) {
+        isDeposited = false;
+        payloadGroup.classList.remove('deposited');
+        finalMasterCoin.classList.remove('vis');
+        svgCanvas.classList.remove('zoomed-out');
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!rafId) {
+      rafId = requestAnimationFrame(() => {
+        handleScroll();
+        rafId = null;
+      });
+    }
+  }, { passive: true });
+  
+  window.addEventListener('resize', handleScroll);
+  handleScroll();
+</script>
+</body>
+</html>

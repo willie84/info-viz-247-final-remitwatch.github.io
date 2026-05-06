@@ -12,9 +12,11 @@
   <header class="top-app-bar">
     <a href="index.html" class="brand"><span>👁️</span> Remit<strong>Watch</strong></a>
     <div class="nav-steps">
-      <span class="active">1. The Micro Lesson</span>
+      <span class="active">1. Amina's Choice</span>
       <span>→</span>
-      <span>2. The Macro Lesson</span>
+      <span>2. How It Works</span>
+      <span>→</span>
+      <span>3. The Data</span>
     </div>
   </header>
 
@@ -99,12 +101,14 @@
 
     </div>
 
+    <!-- COIN ANIMATION STAGE -->
     <div class="animation-stage" id="coin-stage">
       <h3 id="coin-lbl">Processing Transfer...</h3>
       <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
       <div class="coin-grid" id="coin-grid"></div>
     </div>
 
+    <!-- REVEAL -->
     <div class="reveal-section" id="reveal">
       <h2 class="headline-large" style="text-align: center;" id="reveal-hl">Here's what <em>actually arrived.</em></h2>
       
@@ -133,16 +137,23 @@
         <p id="ins-body"></p>
       </div>
 
+      <!-- NEXT STEP BANNER → now goes to concepts.html -->
       <div class="next-step-banner">
-        <h2>Is this just Amina's problem?</h2>
-        <p class="body-large" style="margin: 1rem auto;">Millions of families across Sub-Saharan Africa face this exact system every month. The World Bank has been tracking it for years.</p>
-        <div style="display: flex; gap: 1rem; justify-content: center;">
-          <button class="btn-outlined" style="width: auto; padding: 12px 24px;" onclick="resetAll()">↺ Try the other amount</button>
-          <a href="page2.html" class="btn-primary" style="width: auto; padding: 12px 32px; text-decoration: none; display: inline-block;">See the global data &rarr;</a>
+        <h2>Wait — what just happened?</h2>
+        <p class="body-large" style="margin: 1rem auto;">
+          Before we show you the global data, follow the money through the full system — every fee type explained, step by step.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <button class="btn-outlined" style="width: auto; padding: 12px 24px;" onclick="resetAll()">
+            ↺ Try the other amount
+          </button>
+          <a href="concepts.html" class="btn-primary" style="width: auto; padding: 12px 32px; text-decoration: none; display: inline-block;">
+            How does it work? &rarr;
+          </a>
         </div>
       </div>
-    </div>
 
+    </div>
   </main>
 
   <script>
@@ -168,7 +179,8 @@
       amt = v;
       document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      updateCards(); resetAll();
+      updateCards();
+      resetAll();
     }
 
     function pick(id) {
@@ -180,7 +192,7 @@
       });
       document.getElementById('card-' + id).classList.add('selected');
       document.getElementById('btn-' + id).textContent = '✓ Selected';
-      
+
       const sb = document.getElementById('send-btn');
       sb.disabled = false;
       sb.textContent = 'Send £' + fmt(amt) + ' with ' + (id === 'a' ? 'SendFree' : 'TransferGo') + ' →';
@@ -193,7 +205,8 @@
       for (let i = 0; i < total; i++) {
         const c = document.createElement('div');
         c.className = 'coin ' + (i < total - lost ? 'safe' : 'lost');
-        c.textContent = '£'; c.id = 'coin-' + i;
+        c.textContent = '£';
+        c.id = 'coin-' + i;
         grid.appendChild(c);
       }
     }
@@ -232,13 +245,18 @@
           if (el) el.classList.add('gone');
           lostSoFar++;
         }
-        if (progress >= 100) { clearInterval(timer); setTimeout(() => showReveal(a, b, pickedA, lostCoins), 500); }
+        if (progress >= 100) {
+          clearInterval(timer);
+          setTimeout(() => showReveal(a, b, pickedA, lostCoins), 500);
+        }
       }, 50);
     }
 
     function showReveal(a2, b2, pickedA, lostCoins) {
       const lbl = document.getElementById('coin-lbl');
-      lbl.textContent = pickedA ? lostCoins + ' coins never arrived — absorbed by the exchange rate margin.' : 'Sent! The fee was upfront. The rate was real.';
+      lbl.textContent = pickedA
+        ? lostCoins + ' coins never arrived — absorbed by the exchange rate margin.'
+        : 'Sent! The fee was upfront. The rate was real.';
 
       document.getElementById('ra-val').textContent = fmt(a2.gets) + ' KES';
       document.getElementById('rb-val').textContent = fmt(b2.gets) + ' KES';
@@ -264,31 +282,37 @@
       document.getElementById('reveal-hl').innerHTML = userWon
         ? 'Good instinct. Here\'s <em>exactly why.</em>'
         : 'The math flips as you scale. <em>Here\'s why.</em>';
+
       document.getElementById('ins-title').textContent = aWins
         ? 'At smaller amounts, "zero-fee" apps can sometimes win.'
         : 'The real exchange rate beats zero fees — especially at scale.';
+
       document.getElementById('ins-body').innerHTML =
-        `SendFree shows <strong>£0 fee</strong> but offers a weak rate of <strong>${A_RATE.toFixed(3)} KES</strong>. 
-         TransferGo charges <strong>£${b2.fee.toFixed(2)} upfront</strong> but uses the real market rate of <strong>${MID.toFixed(3)} KES</strong>. 
-         <br><br>At £${fmt(amt)}, the difference in outcome is <strong>${diff} KES</strong>. Try toggling the amount above to see the gap widen as you send more.`;
+        `SendFree shows <strong>£0 fee</strong> but offers a weak rate of <strong>${A_RATE.toFixed(3)} KES</strong>.
+         TransferGo charges <strong>£${b2.fee.toFixed(2)} upfront</strong> but uses the real market rate of <strong>${MID.toFixed(3)} KES</strong>.
+         <br><br>At £${fmt(amt)}, the difference in outcome is <strong>${diff} KES</strong>.
+         Try toggling the amount above to see the gap widen as you send more.`;
 
       document.getElementById('reveal').classList.add('show');
       setTimeout(() => document.getElementById('reveal').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
     }
 
     function resetAll() {
-      sending = false; picked = null;
+      sending = false;
+      picked = null;
       document.querySelectorAll('.app-card').forEach(c => {
         c.classList.remove('selected', 'dimmed');
         c.querySelector('.btn-outlined').textContent = c.id === 'card-a' ? 'Choose SendFree' : 'Choose TransferGo';
       });
       const sb = document.getElementById('send-btn');
-      sb.disabled = true; sb.textContent = 'Select an app to continue →';
+      sb.disabled = true;
+      sb.textContent = 'Select an app to continue →';
       document.getElementById('coin-stage').classList.remove('show');
       document.getElementById('coin-grid').innerHTML = '';
       document.getElementById('prog-bar').style.width = '0%';
       document.getElementById('reveal').classList.remove('show');
     }
+
     updateCards();
   </script>
 </body>

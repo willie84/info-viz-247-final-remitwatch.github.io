@@ -7,30 +7,26 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     /* ── CASCADING "DOWN & RIGHT" ANIMATION SYSTEM ── */
-    
     .slideshow-container {
       padding: 4rem 2rem;
       max-width: 1400px;
       margin: 0 auto;
-      overflow-x: hidden; /* Prevents horizontal scrollbar from animations */
+      overflow-x: hidden;
     }
 
     .slide-step {
       margin-bottom: 8rem;
-      /* Initial state: Hidden, shifted up and left */
       opacity: 0;
-      transform: translate(-80px, -80px); 
-      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
+      transform: translate(-80px, -80px);
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1),
                   transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     .slide-step.visible {
-      /* Final state: Visible, moved down and right into place */
       opacity: 1;
-      transform: translate(0, 0); 
+      transform: translate(0, 0);
     }
 
-    /* Create the "staircase" cascading effect on desktop */
     @media (min-width: 1000px) {
       .slide-step:nth-child(1) { width: 80%; margin-left: 0; }
       .slide-step:nth-child(2) { width: 80%; margin-left: 5%; }
@@ -39,7 +35,6 @@
       .slide-step:nth-child(5) { width: 80%; margin-left: 20%; }
     }
 
-    /* Minimalist Typography for less reading, more looking */
     .insight-tag {
       display: inline-block;
       background: var(--md-sys-color-primary-container);
@@ -51,11 +46,44 @@
       margin-bottom: 1rem;
       font-family: var(--font-brand);
     }
+
     .punchy-text {
       font-size: 1.25rem;
       color: var(--md-sys-color-on-surface-variant);
       max-width: 60ch;
       margin-bottom: 2rem;
+    }
+
+    /* ── FEEDBACK BANNER ── */
+    .feedback-banner {
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 24px;
+      padding: 2.5rem;
+      text-align: center;
+      margin: 2rem auto 0;
+      max-width: 640px;
+    }
+
+    .feedback-banner h3 {
+      font-family: var(--font-brand);
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--md-sys-color-on-background);
+    }
+
+    .feedback-banner p {
+      font-size: 1rem;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
   </style>
 </head>
@@ -64,95 +92,157 @@
   <header class="top-app-bar">
     <a href="index.html" class="brand"><span>👁️</span> Remit<strong>Watch</strong></a>
     <div class="nav-steps">
-      <a href="index.html" style="color: var(--md-sys-color-on-surface-variant); text-decoration: none;">&larr; 1. The Micro Lesson</a>
+      <a href="index.html" style="color: var(--md-sys-color-on-surface-variant); text-decoration: none;">1. Amina's Choice</a>
       <span>→</span>
-      <span class="active">2. The Macro Lesson</span>
+      <a href="concepts.html" style="color: var(--md-sys-color-on-surface-variant); text-decoration: none;">2. How It Works</a>
+      <span>→</span>
+      <span class="active">3. The Data</span>
     </div>
   </header>
 
   <main class="slideshow-container">
 
+    <!-- INTRO -->
     <div class="slide-step visible">
       <div class="insight-tag">The Scale of the Problem</div>
       <h1 class="headline-large">Amina's missing money isn't a glitch.<br><em>It's a global system.</em></h1>
-      <p class="punchy-text">Millions of families lose billions to hidden margins and high fees. Let's let the World Bank data show exactly where the money goes.</p>
+      <p class="punchy-text">
+        You've seen how the fees work. Now see how they play out across millions of real transfers —
+        in Amina's corridor, across Africa, and globally.
+        The World Bank has been tracking it for years.
+      </p>
     </div>
 
+    <!-- SLIDE 1: PROVIDER TYPE -->
     <div class="slide-step">
       <div class="insight-tag">01 / The Providers</div>
       <h2 class="block-title">Banks charge 3× more than mobile apps.</h2>
-      <p class="punchy-text">Just like SendFree hid its fee in a bad exchange rate, traditional commercial banks average an <strong>8.3% global cost</strong>. Mobile operators sit near <strong>3.1%</strong>.</p>
-      
+      <p class="punchy-text">
+        Just like SendFree hid its fee in a bad exchange rate, traditional commercial banks
+        average <strong>8.3% globally</strong>. Mobile operators sit near <strong>3.1%</strong> —
+        the only provider type actually meeting the UN's 3% target.
+      </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
-          <iframe src="https://public.tableau.com/views/Book1_17777798762820/MTOscheaper?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="420" title="Average Cost by Provider"></iframe>
+          <iframe
+            src="https://public.tableau.com/views/Book1_17777798762820/MTOscheaper?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no"
+            width="100%" height="420"
+            title="Average Cost by Provider Type">
+          </iframe>
         </div>
       </div>
     </div>
 
+    <!-- SLIDE 2: UK PROVIDERS -->
     <div class="slide-step">
       <div class="insight-tag">02 / Amina's Route</div>
       <h2 class="block-title">Brand names mean higher fees.</h2>
-      <p class="punchy-text">We made up our apps on page one, but here is the real UK → Kenya data. Transparent apps cost ~1%. Legacy giants like Western Union sit over 8%.</p>
-
+      <p class="punchy-text">
+        We used fictional apps on page one — but here is the real UK → Kenya data.
+        Transparent apps cost around 1%. Legacy giants like Western Union sit over 8%.
+        <strong>Same route. Same destination. Wildly different outcomes for Amina's mother.</strong>
+      </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
-          <iframe src="https://public.tableau.com/views/Book1_17777798762820/Uk-providers-to-Kenya?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="580" title="UK to Kenya Providers"></iframe>
+          <iframe
+            src="https://public.tableau.com/views/Book1_17777798762820/Uk-providers-to-Kenya?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no"
+            width="100%" height="580"
+            title="UK to Kenya Providers">
+          </iframe>
         </div>
       </div>
     </div>
 
+    <!-- SLIDE 3: GLOBAL REGION -->
     <div class="slide-step">
       <div class="insight-tag">03 / The Global Toll</div>
-      <h2 class="block-title">Sub-Saharan Africa pays the highest tax on earth.</h2>
-      <p class="punchy-text">The UN target is 3%. Sub-Saharan Africa averages <strong>11.5%</strong>. This system drains capital directly from the communities that need it most.</p>
-
+      <h2 class="block-title">Sub-Saharan Africa pays the highest price on earth.</h2>
+      <p class="punchy-text">
+        The UN target is 3%. Sub-Saharan Africa averages <strong>11.5%</strong>.
+        Every other region in the world is closer to the target than Africa.
+        This system drains capital directly from the communities that need it most.
+      </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
-          <iframe src="https://public.tableau.com/views/Book1_17777798762820/regioncostsmore?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="440" title="Average Cost by Region"></iframe>
+          <iframe
+            src="https://public.tableau.com/views/Book1_17777798762820/regioncostsmore?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no"
+            width="100%" height="440"
+            title="Average Cost by Region">
+          </iframe>
         </div>
       </div>
     </div>
 
+    <!-- SLIDE 4: CORRIDORS TO KENYA -->
     <div class="slide-step">
-      <div class="insight-tag">04 / Global Inequality</div>
+      <div class="insight-tag">04 / The Corridor Problem</div>
       <h2 class="block-title">Where you send <em>from</em> dictates the price.</h2>
-      <p class="punchy-text">Amina's UK-to-Kenya route is competitive. But look at other countries sending into Kenya. A fair remittance system requires global, not just regional, transparency.</p>
-
+      <p class="punchy-text">
+        Amina sends from London — one of the cheaper routes into Kenya at 4.9%.
+        But Tanzania → Kenya, an intra-African corridor, averages <strong>20.98%</strong>.
+        The assumption that sending within Africa is cheaper is simply wrong.
+      </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
-          <iframe src="https://public.tableau.com/views/Book1_17777798762820/sendingtokenya?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no" width="100%" height="580" title="Sending to Kenya"></iframe>
+          <iframe
+            src="https://public.tableau.com/views/Book1_17777798762820/sendingtokenya?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no"
+            width="100%" height="580"
+            title="Sending to Kenya by Corridor">
+          </iframe>
         </div>
       </div>
     </div>
 
   </main>
 
-  <footer class="footer" style="text-align: center; padding: 4rem 2rem;">
-    <p>Data Source: World Bank Remittance Prices Worldwide (RPW)</p>
-    <br>
-    <a href="index.html" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto; padding: 12px 32px;">&larr; Return to Amina's Story</a>
+  <!-- FOOTER + FEEDBACK -->
+  <footer style="padding: 4rem 2rem; text-align: center;">
+
+    <div class="feedback-banner">
+      <h3>Help us improve RemitWatch</h3>
+      <p>
+        You've completed the full experience — Amina's story, the fee explainer, and the global data.
+        3 minutes of feedback helps us make this clearer for the next person.
+      </p>
+      <div class="btn-group">
+        <a
+          href="https://forms.gle/YOUR_GOOGLE_FORM_LINK_HERE"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary"
+          style="text-decoration: none; display: inline-block; width: auto; padding: 12px 32px;">
+          Share your feedback &rarr;
+        </a>
+        <a
+          href="index.html"
+          class="btn-outlined"
+          style="text-decoration: none; display: inline-block; width: auto; padding: 12px 24px;">
+          &larr; Start again
+        </a>
+      </div>
+    </div>
+
+    <p style="margin-top: 2rem; font-size: 0.875rem; color: var(--md-sys-color-on-surface-variant);">
+      Data: World Bank Remittance Prices Worldwide (RPW) &nbsp;·&nbsp;
+      INFO 247 · UC Berkeley School of Information
+    </p>
+
   </footer>
 
   <script>
-    // Slide-in Observer: Triggers when the element enters the viewport
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Add the visible class to trigger the down-and-right animation
           entry.target.classList.add('visible');
-          // Optional: Stop observing once it's visible so it doesn't animate out
-          observer.unobserve(entry.target); 
+          observer.unobserve(entry.target);
         }
       });
-    }, { 
-      threshold: 0.15, // Triggers when 15% of the card is visible
-      rootMargin: "0px 0px -50px 0px" // Triggers slightly before it hits the bottom
+    }, {
+      threshold: 0.15,
+      rootMargin: "0px 0px -50px 0px"
     });
 
-    document.querySelectorAll('.slide-step').forEach((el) => {
-      observer.observe(el);
-    });
+    document.querySelectorAll('.slide-step').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
