@@ -21,12 +21,19 @@
   </header>
 
   <main class="container">
-    <div class="split-layout">
-      
-      <section class="story-section">
+
+    <!-- ╔══════════════════════════════════════════════════════════
+         ACT 1 — THE PITCH
+         One app at a time. Toggle to flip the phone over.
+    ══════════════════════════════════════════════════════════╗ -->
+    <section class="pitch-stage" id="act1">
+      <div class="pitch-intro">
         <div class="kicker">London → Nairobi &middot; Monthly Remittance</div>
         <h1 class="headline-large">Amina is a nurse.<br>She sends money <em>home.</em></h1>
-        <p class="body-large">She has two apps on her phone. Select the amount she needs to send, and pick the app that looks like the better deal.</p>
+        <p class="body-large">
+          She has two apps on her phone — but she can only use one to send this month's money.
+          Look at each pitch, then pick the one you'd choose.
+        </p>
 
         <div class="amount-card">
           <strong>This month she sends:</strong>
@@ -35,109 +42,254 @@
             <button class="seg-btn" onclick="setAmt(2000, this)">£2,000</button>
           </div>
         </div>
+      </div>
 
-        <button class="btn-primary" id="send-btn" onclick="doSend()" disabled>Select an app to continue &rarr;</button>
-      </section>
+      <!-- THE PHONE — only one face visible at a time -->
+      <div class="phone-stage">
+        <div class="phone-frame">
 
-      <section class="apps-section">
-        <div class="app-grid">
-          
-          <div class="app-card" id="card-a" onclick="pick('a')">
-            <div class="card-header">
-              <div class="app-icon ic-sf">SF</div>
-              <div>
-                <div class="app-title">SendFree</div>
-                <div class="app-subtitle">No transfer fees. Always.</div>
-              </div>
+          <!-- SENDFREE FACE -->
+          <div class="phone-face active" id="face-a" data-app="a">
+            <div class="phone-status-bar">
+              <span>9:41</span>
+              <span class="phone-status-name">SendFree</span>
+              <span>📶</span>
             </div>
-            <div class="card-body">
-              <div class="data-row">
-                <span class="data-label">Transfer fee</span>
-                <span class="data-value val-green">£0.00</span>
+
+            <div class="pitch-hero ic-sf-bg">
+              <div class="pitch-badge">SendFree</div>
+              <div class="pitch-headline">
+                <span class="pitch-zero">£0</span>
+                <span class="pitch-zero-label">transfer fee</span>
               </div>
-              <div class="data-row">
-                <span class="data-label">Exchange Rate</span>
-                <span class="data-value" id="a-rate">173.700 KES</span>
-              </div>
-              <div class="data-row" style="margin-top: 1rem;">
-                <span class="data-label"><strong>Mother gets</strong></span>
-                <span class="data-value large" id="a-gets">86,850 KES</span>
-              </div>
+              <div class="pitch-tagline">No fees. No surprises. Ever.</div>
             </div>
-            <div class="card-actions">
-              <button class="btn-outlined" id="btn-a">Choose SendFree</button>
+
+            <div class="pitch-body">
+              <div class="pitch-row">
+                <span class="pitch-row-label">You send</span>
+                <span class="pitch-row-value" id="a-send">£500.00</span>
+              </div>
+              <div class="pitch-row">
+                <span class="pitch-row-label">Transfer fee</span>
+                <span class="pitch-row-value val-green">£0.00</span>
+              </div>
+              <div class="pitch-row">
+                <span class="pitch-row-label">Exchange rate</span>
+                <span class="pitch-row-value pitch-rate-small" id="a-rate">1 GBP = 173.700 KES</span>
+              </div>
+              <div class="pitch-row pitch-row-total pitch-row-mystery">
+                <span class="pitch-row-label">Mother receives</span>
+                <span class="pitch-row-value mystery-value">
+                  <span class="mystery-mask">▮▮,▮▮▮ KES</span>
+                  <span class="mystery-hint">revealed after you choose</span>
+                </span>
+              </div>
+
+              <button class="btn-primary pitch-choose" onclick="choose('a')">
+                Choose SendFree →
+              </button>
             </div>
           </div>
 
-          <div class="app-card" id="card-b" onclick="pick('b')">
-            <div class="card-header">
-              <div class="app-icon ic-tg">TG</div>
-              <div>
-                <div class="app-title">TransferGo</div>
-                <div class="app-subtitle">Small fee. Real exchange rate.</div>
-              </div>
+          <!-- TRANSFERGO FACE -->
+          <div class="phone-face" id="face-b" data-app="b">
+            <div class="phone-status-bar">
+              <span>9:41</span>
+              <span class="phone-status-name">TransferGo</span>
+              <span>📶</span>
             </div>
-            <div class="card-body">
-              <div class="data-row">
-                <span class="data-label">Transfer fee</span>
-                <span class="data-value val-warn" id="b-fee">£7.15</span>
+
+            <div class="pitch-hero ic-tg-bg">
+              <div class="pitch-badge">TransferGo</div>
+              <div class="pitch-headline">
+                <span class="pitch-zero pitch-zero-small">Real</span>
+                <span class="pitch-zero-label">market rate</span>
               </div>
-              <div class="data-row">
-                <span class="data-label">Exchange Rate</span>
-                <span class="data-value" id="b-rate">175.375 KES</span>
-              </div>
-              <div class="data-row" style="margin-top: 1rem;">
-                <span class="data-label"><strong>Mother gets</strong></span>
-                <span class="data-value large" id="b-gets">86,434 KES</span>
-              </div>
+              <div class="pitch-tagline">Small upfront fee. The real exchange rate.</div>
             </div>
-            <div class="card-actions">
-              <button class="btn-outlined" id="btn-b">Choose TransferGo</button>
+
+            <div class="pitch-body">
+              <div class="pitch-row">
+                <span class="pitch-row-label">You send</span>
+                <span class="pitch-row-value" id="b-send">£500.00</span>
+              </div>
+              <div class="pitch-row">
+                <span class="pitch-row-label">Transfer fee</span>
+                <span class="pitch-row-value val-warn" id="b-fee">£7.15</span>
+              </div>
+              <div class="pitch-row">
+                <span class="pitch-row-label">Exchange rate</span>
+                <span class="pitch-row-value pitch-rate-small" id="b-rate">1 GBP = 175.375 KES</span>
+              </div>
+              <div class="pitch-row pitch-row-total pitch-row-mystery">
+                <span class="pitch-row-label">Mother receives</span>
+                <span class="pitch-row-value mystery-value">
+                  <span class="mystery-mask">▮▮,▮▮▮ KES</span>
+                  <span class="mystery-hint">revealed after you choose</span>
+                </span>
+              </div>
+
+              <button class="btn-primary pitch-choose" onclick="choose('b')">
+                Choose TransferGo →
+              </button>
             </div>
           </div>
 
         </div>
-      </section>
 
-    </div>
+        <!-- TOGGLE — flip between apps -->
+        <div class="phone-toggle" role="group" aria-label="Switch between apps">
+          <button class="toggle-btn active" id="toggle-a" onclick="flipTo('a')">
+            <span class="toggle-dot ic-sf"></span> SendFree
+          </button>
+          <button class="toggle-btn" id="toggle-b" onclick="flipTo('b')">
+            <span class="toggle-dot ic-tg"></span> TransferGo
+          </button>
+        </div>
 
-    <!-- COIN ANIMATION STAGE -->
+        <p class="phone-hint" id="phone-hint">
+          ↑ Tap <strong>TransferGo</strong> to see her other option, then pick one.
+        </p>
+      </div>
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════════════════
+         ACT 2 — COIN ANIMATION (committed; sending)
+    ══════════════════════════════════════════════════════════╗ -->
     <div class="animation-stage" id="coin-stage">
       <h3 id="coin-lbl">Processing Transfer...</h3>
       <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
       <div class="coin-grid" id="coin-grid"></div>
     </div>
 
-    <!-- REVEAL -->
+    <!-- ╔══════════════════════════════════════════════════════════
+         ACT 3 — THE REVEAL (shortfall framing)
+    ══════════════════════════════════════════════════════════╗ -->
     <div class="reveal-section" id="reveal">
-      <h2 class="headline-large" style="text-align: center;" id="reveal-hl">Here's what <em>actually arrived.</em></h2>
-      
-      <div class="results-grid">
-        <div class="result-card" id="rc-a">
-          <h3>SendFree <span id="rtag-a" style="font-size: 0.8rem; padding: 4px 8px; border-radius: 12px; background: #eee;"></span></h3>
-          <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--md-sys-color-outline-variant);">
-          <div class="data-row"><span class="data-label">Mother receives</span><span class="data-value large" id="ra-val">—</span></div>
-          <div class="data-row"><span class="data-label">Transfer fee</span><span class="data-value val-green">£0.00</span></div>
-          <div class="data-row"><span class="data-label">Hidden FX margin</span><span class="data-value val-red" id="ra-fx">—</span></div>
-          <div class="data-row"><span class="data-label"><strong>Real total cost</strong></span><span class="data-value" id="ra-pct">—</span></div>
-        </div>
-        
-        <div class="result-card" id="rc-b">
-          <h3>TransferGo <span id="rtag-b" style="font-size: 0.8rem; padding: 4px 8px; border-radius: 12px; background: #eee;"></span></h3>
-          <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--md-sys-color-outline-variant);">
-          <div class="data-row"><span class="data-label">Mother receives</span><span class="data-value large" id="rb-val">—</span></div>
-          <div class="data-row"><span class="data-label">Transfer fee</span><span class="data-value val-red" id="rb-fee">—</span></div>
-          <div class="data-row"><span class="data-label">Hidden FX margin</span><span class="data-value val-green">£0.00</span></div>
-          <div class="data-row"><span class="data-label"><strong>Real total cost</strong></span><span class="data-value" id="rb-pct">—</span></div>
+      <div class="reveal-kicker" id="reveal-kicker">The real comparison</div>
+      <h2 class="headline-large reveal-headline" id="reveal-hl">
+        Both apps shortchanged mother.<br><em id="reveal-hl-em">Just in different ways.</em>
+      </h2>
+
+      <!-- BASELINE: what mother should have received at the honest market rate -->
+      <div class="baseline-card">
+        <div class="baseline-row">
+          <div>
+            <div class="baseline-label">At the real market rate, mother should receive</div>
+            <div class="baseline-value" id="baseline-val">87,688 KES</div>
+          </div>
+          <div class="baseline-meta">
+            <span id="baseline-amt">£500</span> · 1 GBP = <span id="baseline-rate">175.375 KES</span>
+          </div>
         </div>
       </div>
 
-      <div class="insight-box">
-        <h3 id="ins-title" style="margin-bottom: 0.5rem;"></h3>
-        <p id="ins-body"></p>
+      <!-- SHORTFALL BARS — the heart of the new reveal -->
+      <div class="shortfall-stack">
+
+        <div class="shortfall-row" id="sf-a">
+          <div class="shortfall-header">
+            <div class="shortfall-name">
+              <span class="toggle-dot ic-sf"></span>
+              <strong>SendFree</strong>
+              <span class="shortfall-tag" id="sf-a-tag"></span>
+            </div>
+            <div class="shortfall-delivered" id="sf-a-delivered">86,850 KES</div>
+          </div>
+
+          <div class="shortfall-bar-wrap">
+            <div class="shortfall-track" aria-label="Shortfall versus market rate">
+              <div class="shortfall-delivered-bar" id="sf-a-bar" style="width: 92%;"></div>
+              <div class="shortfall-lost-bar" id="sf-a-lost" style="width: 8%;"></div>
+            </div>
+            <div class="shortfall-lost-figure">
+              <span class="shortfall-lost-amount" id="sf-a-lost-lbl">−838 KES</span>
+              <span class="shortfall-lost-caption">never arrived</span>
+            </div>
+          </div>
+
+          <div class="shortfall-explain">
+            <span class="shortfall-mechanism">Lost to a <strong>weaker exchange rate</strong> than the market —
+            SendFree quotes <strong id="sf-a-quoted-rate">173.700</strong>, the real rate is
+            <strong id="sf-a-real-rate">175.375</strong>.</span>
+          </div>
+        </div>
+
+        <div class="shortfall-row" id="sf-b">
+          <div class="shortfall-header">
+            <div class="shortfall-name">
+              <span class="toggle-dot ic-tg"></span>
+              <strong>TransferGo</strong>
+              <span class="shortfall-tag" id="sf-b-tag"></span>
+            </div>
+            <div class="shortfall-delivered" id="sf-b-delivered">86,434 KES</div>
+          </div>
+
+          <div class="shortfall-bar-wrap">
+            <div class="shortfall-track" aria-label="Shortfall versus market rate">
+              <div class="shortfall-delivered-bar" id="sf-b-bar" style="width: 88%;"></div>
+              <div class="shortfall-lost-bar" id="sf-b-lost" style="width: 12%;"></div>
+            </div>
+            <div class="shortfall-lost-figure">
+              <span class="shortfall-lost-amount" id="sf-b-lost-lbl">−1,254 KES</span>
+              <span class="shortfall-lost-caption">never arrived</span>
+            </div>
+          </div>
+
+          <div class="shortfall-explain">
+            <span class="shortfall-mechanism">Lost to an <strong>upfront transfer fee</strong> of
+            <strong id="sf-b-fee-lbl">£7.15</strong> — shown honestly before sending.</span>
+          </div>
+        </div>
+
       </div>
 
-      <!-- NEXT STEP BANNER → now goes to concepts.html -->
+      <!-- THE SCALE PUNCHLINE — animated -->
+      <div class="scale-prompt">
+        <div class="scale-prompt-text">
+          <strong>Watch what happens at a bigger transfer.</strong>
+          <span>Mother's salary, a school fee, a hospital bill.</span>
+        </div>
+        <div class="scale-toggle" role="group">
+          <button class="scale-btn" id="scale-500" onclick="setScale(500)">£500</button>
+          <button class="scale-btn active" id="scale-2000" onclick="setScale(2000)">£2,000</button>
+        </div>
+      </div>
+
+      <!-- EXPANDABLE — the prose for users who want it -->
+      <details class="reveal-details">
+        <summary>
+          <span>See the breakdown — fees, rates, real total cost</span>
+          <span class="details-chevron">▾</span>
+        </summary>
+        <div class="reveal-details-body">
+          <div class="results-grid">
+            <div class="result-card" id="rc-a">
+              <h3>SendFree</h3>
+              <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--md-sys-color-outline-variant);">
+              <div class="data-row"><span class="data-label">Mother receives</span><span class="data-value large" id="ra-val">—</span></div>
+              <div class="data-row"><span class="data-label">Transfer fee</span><span class="data-value val-green">£0.00</span></div>
+              <div class="data-row"><span class="data-label">Hidden FX margin</span><span class="data-value val-red" id="ra-fx">—</span></div>
+              <div class="data-row"><span class="data-label"><strong>Real total cost</strong></span><span class="data-value" id="ra-pct">—</span></div>
+            </div>
+
+            <div class="result-card" id="rc-b">
+              <h3>TransferGo</h3>
+              <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--md-sys-color-outline-variant);">
+              <div class="data-row"><span class="data-label">Mother receives</span><span class="data-value large" id="rb-val">—</span></div>
+              <div class="data-row"><span class="data-label">Transfer fee</span><span class="data-value val-red" id="rb-fee">—</span></div>
+              <div class="data-row"><span class="data-label">Hidden FX margin</span><span class="data-value val-green">£0.00</span></div>
+              <div class="data-row"><span class="data-label"><strong>Real total cost</strong></span><span class="data-value" id="rb-pct">—</span></div>
+            </div>
+          </div>
+          <p class="reveal-details-note">
+            "Hidden FX margin" is the gap between the rate SendFree gives you and the rate the market actually offers.
+            You never see it on the receipt — but mother does, in the smaller amount that arrives.
+          </p>
+        </div>
+      </details>
+
       <div class="next-step-banner">
         <h2>Wait — what just happened?</h2>
         <p class="body-large" style="margin: 1rem auto;">
@@ -145,33 +297,62 @@
         </p>
         <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
           <button class="btn-outlined" style="width: auto; padding: 12px 24px;" onclick="resetAll()">
-            ↺ Try the other amount
+            ↺ Try again with a different app
           </button>
           <a href="concepts.html" class="btn-primary" style="width: auto; padding: 12px 32px; text-decoration: none; display: inline-block;">
             How does it work? &rarr;
           </a>
         </div>
       </div>
-
     </div>
   </main>
 
   <script>
-    const MID = 175.375, A_RATE = 173.700;
+    // ─────────────────────────────────────────────────────────
+    // STATE
+    // ─────────────────────────────────────────────────────────
+    const MID = 175.375;
+    const A_RATE = 173.700;
     const FEES = { 500: { fee: 7.15 }, 2000: { fee: 14.50 } };
-    let amt = 500, picked = null, sending = false;
 
-    function fmt(n) { return Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 }) }
-    function calcA(a) { return { gets: Math.round(a * A_RATE), fxLoss: +(a - a * A_RATE / MID).toFixed(2), pct: +((1 - A_RATE / MID) * 100).toFixed(2) } }
-    function calcB(a) { const f = FEES[a] || FEES[500]; return { gets: Math.round((a - f.fee) * MID), fee: f.fee, pct: +(f.fee / a * 100).toFixed(2) } }
+    let amt = 500;
+    let picked = null;
+    let sending = false;
+    let visited = { a: true, b: false }; // SendFree shown first by design
 
+    // ─────────────────────────────────────────────────────────
+    // HELPERS
+    // ─────────────────────────────────────────────────────────
+    const fmt = n => Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+    function calcA(a) {
+      return {
+        gets: Math.round(a * A_RATE),
+        fxLoss: +(a - a * A_RATE / MID).toFixed(2),
+        pct: +((1 - A_RATE / MID) * 100).toFixed(2)
+      };
+    }
+    function calcB(a) {
+      const f = FEES[a] || FEES[500];
+      return {
+        gets: Math.round((a - f.fee) * MID),
+        fee: f.fee,
+        pct: +(f.fee / a * 100).toFixed(2)
+      };
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // PITCH SCREEN UPDATES
+    // ─────────────────────────────────────────────────────────
     function updateCards() {
-      const a = calcA(amt), b = calcB(amt);
-      document.getElementById('a-rate').textContent = A_RATE.toFixed(3) + ' KES';
-      document.getElementById('a-gets').textContent = fmt(a.gets) + ' KES';
-      document.getElementById('b-fee').textContent = '£' + (FEES[amt] || FEES[500]).fee.toFixed(2);
-      document.getElementById('b-rate').textContent = MID.toFixed(3) + ' KES';
-      document.getElementById('b-gets').textContent = fmt(b.gets) + ' KES';
+      const fee = (FEES[amt] || FEES[500]).fee;
+
+      document.getElementById('a-send').textContent = '£' + amt.toFixed(2);
+      document.getElementById('a-rate').textContent = '1 GBP = ' + A_RATE.toFixed(3) + ' KES';
+
+      document.getElementById('b-send').textContent = '£' + amt.toFixed(2);
+      document.getElementById('b-fee').textContent = '£' + fee.toFixed(2);
+      document.getElementById('b-rate').textContent = '1 GBP = ' + MID.toFixed(3) + ' KES';
     }
 
     function setAmt(v, btn) {
@@ -180,25 +361,48 @@
       document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       updateCards();
-      resetAll();
+      // If reveal is already open, fold it so they re-commit at the new amount.
+      if (document.getElementById('reveal').classList.contains('show')) {
+        resetAll();
+      }
     }
 
-    function pick(id) {
+    // Flip the phone to show the other app
+    function flipTo(id) {
+      if (sending) return;
+      document.querySelectorAll('.phone-face').forEach(f => f.classList.remove('active'));
+      document.getElementById('face-' + id).classList.add('active');
+
+      document.querySelectorAll('.toggle-btn').forEach(t => t.classList.remove('active'));
+      document.getElementById('toggle-' + id).classList.add('active');
+
+      visited[id] = true;
+      updateHint();
+    }
+
+    function updateHint() {
+      const hint = document.getElementById('phone-hint');
+      if (visited.a && visited.b) {
+        hint.innerHTML = "Seen both? Pick the one you'd choose — <strong>she can only use one.</strong>";
+      } else if (visited.a && !visited.b) {
+        hint.innerHTML = "↑ Tap <strong>TransferGo</strong> to see her other option, then pick one.";
+      } else if (!visited.a && visited.b) {
+        hint.innerHTML = "↑ Tap <strong>SendFree</strong> to see her other option, then pick one.";
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // COMMIT — user picks an app
+    // ─────────────────────────────────────────────────────────
+    function choose(id) {
       if (sending) return;
       picked = id;
-      document.querySelectorAll('.app-card').forEach(c => {
-        c.classList.remove('selected');
-        c.querySelector('.btn-outlined').textContent = c.id === 'card-a' ? 'Choose SendFree' : 'Choose TransferGo';
-      });
-      document.getElementById('card-' + id).classList.add('selected');
-      document.getElementById('btn-' + id).textContent = '✓ Selected';
-
-      const sb = document.getElementById('send-btn');
-      sb.disabled = false;
-      sb.textContent = 'Send £' + fmt(amt) + ' with ' + (id === 'a' ? 'SendFree' : 'TransferGo') + ' →';
-      document.getElementById('reveal').classList.remove('show');
+      doSend();
     }
 
+    // ─────────────────────────────────────────────────────────
+    // COIN ANIMATION
+    // ─────────────────────────────────────────────────────────
     function buildCoins(total, lost) {
       const grid = document.getElementById('coin-grid');
       grid.innerHTML = '';
@@ -214,10 +418,9 @@
     function doSend() {
       if (!picked || sending) return;
       sending = true;
-      document.getElementById('send-btn').disabled = true;
-      document.getElementById('card-a').classList.add('dimmed');
-      document.getElementById('card-b').classList.add('dimmed');
-      document.getElementById('card-' + picked).classList.remove('dimmed');
+
+      // Lock the pitch stage and dim it
+      document.getElementById('act1').classList.add('locked');
 
       const a = calcA(amt), b = calcB(amt);
       const pickedA = picked === 'a';
@@ -234,7 +437,7 @@
       const lbl = document.getElementById('coin-lbl');
       let progress = 0, lostSoFar = 0;
       const steps = 2000 / 50;
-      lbl.textContent = 'Transferring £' + fmt(amt) + '...';
+      lbl.textContent = 'Transferring £' + fmt(amt) + ' with ' + (pickedA ? 'SendFree' : 'TransferGo') + '...';
 
       const timer = setInterval(() => {
         progress = Math.min(progress + 100 / steps, 100);
@@ -252,65 +455,126 @@
       }, 50);
     }
 
+    // ─────────────────────────────────────────────────────────
+    // REVEAL — shortfall framing
+    // ─────────────────────────────────────────────────────────
     function showReveal(a2, b2, pickedA, lostCoins) {
       const lbl = document.getElementById('coin-lbl');
       lbl.textContent = pickedA
         ? lostCoins + ' coins never arrived — absorbed by the exchange rate margin.'
         : 'Sent! The fee was upfront. The rate was real.';
 
-      document.getElementById('ra-val').textContent = fmt(a2.gets) + ' KES';
-      document.getElementById('rb-val').textContent = fmt(b2.gets) + ' KES';
-      document.getElementById('ra-fx').textContent = '−£' + a2.fxLoss.toFixed(2);
-      document.getElementById('ra-pct').textContent = a2.pct.toFixed(1) + '%';
-      document.getElementById('rb-fee').textContent = '−£' + b2.fee.toFixed(2);
-      document.getElementById('rb-pct').textContent = b2.pct.toFixed(1) + '%';
+      // Sync the scale-toggle with whatever amount was committed at
+      document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+      const scaleBtn = document.getElementById('scale-' + amt);
+      if (scaleBtn) scaleBtn.classList.add('active');
 
-      const aWins = a2.gets > b2.gets;
-      document.getElementById('rc-a').className = 'result-card' + (aWins ? ' winner' : '');
-      document.getElementById('rc-b').className = 'result-card' + (!aWins ? ' winner' : '');
-      document.getElementById('ra-val').className = 'data-value large ' + (aWins ? 'val-green' : 'val-red');
-      document.getElementById('rb-val').className = 'data-value large ' + (!aWins ? 'val-green' : 'val-red');
-
-      const diff = fmt(Math.abs(b2.gets - a2.gets));
-      const userWon = (pickedA && aWins) || (!pickedA && !aWins);
-
-      const rtagA = document.getElementById('rtag-a');
-      const rtagB = document.getElementById('rtag-b');
-      rtagA.textContent = (aWins ? 'Delivered more' : 'Delivered less') + (pickedA ? ' (Your Pick)' : '');
-      rtagB.textContent = (!aWins ? 'Delivered more' : 'Delivered less') + (!pickedA ? ' (Your Pick)' : '');
-
-      document.getElementById('reveal-hl').innerHTML = userWon
-        ? 'Good instinct. Here\'s <em>exactly why.</em>'
-        : 'The math flips as you scale. <em>Here\'s why.</em>';
-
-      document.getElementById('ins-title').textContent = aWins
-        ? 'At smaller amounts, "zero-fee" apps can sometimes win.'
-        : 'The real exchange rate beats zero fees — especially at scale.';
-
-      document.getElementById('ins-body').innerHTML =
-        `SendFree shows <strong>£0 fee</strong> but offers a weak rate of <strong>${A_RATE.toFixed(3)} KES</strong>.
-         TransferGo charges <strong>£${b2.fee.toFixed(2)} upfront</strong> but uses the real market rate of <strong>${MID.toFixed(3)} KES</strong>.
-         <br><br>At £${fmt(amt)}, the difference in outcome is <strong>${diff} KES</strong>.
-         Try toggling the amount above to see the gap widen as you send more.`;
+      // Render everything at the committed amount
+      renderShortfall(amt, pickedA);
 
       document.getElementById('reveal').classList.add('show');
       setTimeout(() => document.getElementById('reveal').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
     }
 
+    // Render the shortfall bars + baseline + details for a given amount
+    function renderShortfall(forAmt, pickedA) {
+      const a2 = calcA(forAmt);
+      const b2 = calcB(forAmt);
+      const baselineKes = Math.round(forAmt * MID);
+      const aLostKes = baselineKes - a2.gets;
+      const bLostKes = baselineKes - b2.gets;
+      const aPct = a2.pct;   // % lost via FX margin
+      const bPct = b2.pct;   // % lost via fee
+
+      // BASELINE — what mother should have received
+      document.getElementById('baseline-val').textContent = fmt(baselineKes) + ' KES';
+      document.getElementById('baseline-amt').textContent = '£' + fmt(forAmt);
+      document.getElementById('baseline-rate').textContent = MID.toFixed(3) + ' KES';
+
+      // SHORTFALL BARS — use a shared visual scale.
+      // We exaggerate the "lost" portion (×8) so 1% losses are still
+      // legible at small amounts, while preserving the *ratio* between
+      // SendFree's and TransferGo's bars so the comparison stays honest.
+      const SCALE = 8;
+      const aLostWidth = Math.min(aPct * SCALE, 60);
+      const bLostWidth = Math.min(bPct * SCALE, 60);
+
+      // SendFree
+      document.getElementById('sf-a-delivered').textContent = fmt(a2.gets) + ' KES';
+      document.getElementById('sf-a-bar').style.width = (100 - aLostWidth) + '%';
+      document.getElementById('sf-a-lost').style.width = aLostWidth + '%';
+      document.getElementById('sf-a-lost-lbl').textContent = '−' + fmt(aLostKes) + ' KES';
+
+      // TransferGo
+      document.getElementById('sf-b-delivered').textContent = fmt(b2.gets) + ' KES';
+      document.getElementById('sf-b-bar').style.width = (100 - bLostWidth) + '%';
+      document.getElementById('sf-b-lost').style.width = bLostWidth + '%';
+      document.getElementById('sf-b-lost-lbl').textContent = '−' + fmt(bLostKes) + ' KES';
+      document.getElementById('sf-b-fee-lbl').textContent = '£' + b2.fee.toFixed(2);
+
+      // Tags showing which delivered more (now factual, not framed as winning)
+      const aDeliveredMore = a2.gets > b2.gets;
+      const tagA = document.getElementById('sf-a-tag');
+      const tagB = document.getElementById('sf-b-tag');
+      tagA.textContent = (aDeliveredMore ? 'Less lost' : 'More lost') + (pickedA ? ' · Your pick' : '');
+      tagB.textContent = (!aDeliveredMore ? 'Less lost' : 'More lost') + (!pickedA ? ' · Your pick' : '');
+      tagA.className = 'shortfall-tag ' + (aDeliveredMore ? 'tag-better' : 'tag-worse');
+      tagB.className = 'shortfall-tag ' + (!aDeliveredMore ? 'tag-better' : 'tag-worse');
+
+      // Highlight the user's pick
+      document.getElementById('sf-a').classList.toggle('your-pick', pickedA);
+      document.getElementById('sf-b').classList.toggle('your-pick', !pickedA);
+
+      // Reframe the headline based on which app the user picked
+      const hlEm = document.getElementById('reveal-hl-em');
+      hlEm.textContent = pickedA
+        ? "SendFree just hides it better."
+        : "TransferGo shows it on the receipt.";
+
+      // Details panel (expandable)
+      document.getElementById('ra-val').textContent = fmt(a2.gets) + ' KES';
+      document.getElementById('rb-val').textContent = fmt(b2.gets) + ' KES';
+      document.getElementById('ra-fx').textContent = '−£' + a2.fxLoss.toFixed(2);
+      document.getElementById('ra-pct').textContent = a2.pct.toFixed(2) + '%';
+      document.getElementById('rb-fee').textContent = '−£' + b2.fee.toFixed(2);
+      document.getElementById('rb-pct').textContent = b2.pct.toFixed(2) + '%';
+    }
+
+    // Scale toggle inside the reveal — animates the bars at a new amount
+    function setScale(v) {
+      amt = v;
+      document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('scale-' + v).classList.add('active');
+      // Also sync the top-of-page amount toggle so state stays consistent on reset
+      document.querySelectorAll('.seg-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.replace(/[^0-9]/g, '') == String(v));
+      });
+      renderShortfall(v, picked === 'a');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // RESET
+    // ─────────────────────────────────────────────────────────
     function resetAll() {
       sending = false;
       picked = null;
-      document.querySelectorAll('.app-card').forEach(c => {
-        c.classList.remove('selected', 'dimmed');
-        c.querySelector('.btn-outlined').textContent = c.id === 'card-a' ? 'Choose SendFree' : 'Choose TransferGo';
-      });
-      const sb = document.getElementById('send-btn');
-      sb.disabled = true;
-      sb.textContent = 'Select an app to continue →';
+      visited = { a: true, b: false };
+
+      document.getElementById('act1').classList.remove('locked');
+
+      // Reset to SendFree first
+      document.querySelectorAll('.phone-face').forEach(f => f.classList.remove('active'));
+      document.getElementById('face-a').classList.add('active');
+      document.querySelectorAll('.toggle-btn').forEach(t => t.classList.remove('active'));
+      document.getElementById('toggle-a').classList.add('active');
+      updateHint();
+
       document.getElementById('coin-stage').classList.remove('show');
       document.getElementById('coin-grid').innerHTML = '';
       document.getElementById('prog-bar').style.width = '0%';
       document.getElementById('reveal').classList.remove('show');
+
+      document.getElementById('act1').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     updateCards();

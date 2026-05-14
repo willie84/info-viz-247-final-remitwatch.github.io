@@ -10,14 +10,14 @@
   --md-sys-color-on-primary: #ffffff;
   --md-sys-color-primary-container: #d3e3fd;
   --md-sys-color-on-primary-container: #041e49;
-  
+
   --md-sys-color-surface: #f8f9fa;
   --md-sys-color-surface-container: #ffffff;
   --md-sys-color-on-surface: #1f1f1f;
   --md-sys-color-on-surface-variant: #444746;
   --md-sys-color-outline: #c4c7c5;
   --md-sys-color-outline-variant: #e3e3e3;
-  
+
   /* Semantic Colors */
   --semantic-success: #146c2e;
   --semantic-success-container: #c4eed0;
@@ -28,16 +28,18 @@
   /* Typography */
   --font-brand: 'Outfit', sans-serif;
   --font-body: 'Roboto', sans-serif;
-  
+
   /* Layout & Elevations */
   --max-width-interactive: 1200px;
   --max-width-data: 1000px;
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
+  --radius-phone: 36px;
   --elevation-1: 0 1px 2px 0 rgba(0,0,0,0.15), 0 1px 3px 1px rgba(0,0,0,0.05);
   --elevation-2: 0 1px 3px 0 rgba(0,0,0,0.15), 0 4px 8px 3px rgba(0,0,0,0.05);
   --elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 8px 16px 6px rgba(0,0,0,0.05);
+  --elevation-phone: 0 12px 32px -8px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.08);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -91,17 +93,6 @@ body {
   max-width: var(--max-width-data);
   margin: 0 auto;
   padding: 3rem 2rem;
-}
-
-/* ── GRID LAYOUT (PAGE 1) ── */
-.split-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 4rem;
-  align-items: start;
-}
-@media (max-width: 900px) {
-  .split-layout { grid-template-columns: 1fr; gap: 2.5rem; }
 }
 
 /* ── STORYTELLING TYPOGRAPHY ── */
@@ -189,7 +180,284 @@ body {
   box-shadow: none;
 }
 
-/* ── APP CARDS ── */
+.btn-outlined {
+  padding: 10px;
+  border-radius: 50px;
+  border: 1px solid var(--md-sys-color-outline);
+  background: transparent;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PITCH STAGE — Act 1 (single-app commitment)
+═══════════════════════════════════════════════════════════ */
+.pitch-stage {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 4rem;
+  align-items: start;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+@media (max-width: 900px) {
+  .pitch-stage { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+.pitch-stage.locked { opacity: 0.45; filter: grayscale(60%); pointer-events: none; }
+
+.pitch-intro { padding-top: 1rem; }
+
+/* ── THE PHONE FRAME ── */
+.phone-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.phone-frame {
+  width: 100%;
+  max-width: 420px;
+  background: #1f1f1f;
+  border-radius: var(--radius-phone);
+  padding: 12px;
+  box-shadow: var(--elevation-phone);
+  position: relative;
+  overflow: hidden;
+}
+/* Subtle "notch" detail at top */
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 18px;
+  background: #000;
+  border-radius: 12px;
+  z-index: 3;
+}
+
+/* ── PHONE FACES ── */
+.phone-face {
+  display: none;
+  background: var(--md-sys-color-surface-container);
+  border-radius: calc(var(--radius-phone) - 12px);
+  overflow: hidden;
+  animation: faceFadeIn 0.35s ease-out;
+}
+.phone-face.active { display: block; }
+
+@keyframes faceFadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.phone-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface-container);
+}
+.phone-status-name {
+  font-family: var(--font-brand);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface);
+}
+
+/* ── PITCH HERO (the marketing claim) ── */
+.pitch-hero {
+  padding: 2rem 1.5rem 2.25rem;
+  color: white;
+  position: relative;
+  text-align: center;
+}
+.ic-sf-bg { background: linear-gradient(135deg, #1a73e8, #0b57d0); }
+.ic-tg-bg { background: linear-gradient(135deg, #7c3aed, #5b21b6); }
+
+.pitch-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-family: var(--font-brand);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.pitch-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  line-height: 1;
+}
+.pitch-zero {
+  font-family: var(--font-brand);
+  font-weight: 700;
+  font-size: clamp(4rem, 12vw, 6rem);
+  letter-spacing: -0.03em;
+}
+.pitch-zero-small { font-size: clamp(2.75rem, 8vw, 4rem); }
+.pitch-zero-label {
+  font-family: var(--font-brand);
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+  margin-top: 0.5rem;
+}
+.pitch-tagline {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+/* ── PITCH BODY (the receipt rows) ── */
+.pitch-body { padding: 1.5rem; }
+
+.pitch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.pitch-row:last-of-type { border-bottom: none; }
+
+.pitch-row-label {
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.9rem;
+}
+.pitch-row-value {
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--md-sys-color-on-surface);
+}
+.pitch-row-value.large {
+  font-family: var(--font-brand);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.pitch-rate-small { font-size: 0.85rem; }
+
+.pitch-row-total {
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--md-sys-color-outline-variant);
+  border-bottom: none !important;
+}
+
+/* ── MYSTERY ROW — "Mother receives" hidden until commit ── */
+.pitch-row-mystery .pitch-row-label {
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+.mystery-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.mystery-mask {
+  font-family: var(--font-brand);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--md-sys-color-outline);
+  background: var(--md-sys-color-outline-variant);
+  padding: 2px 10px;
+  border-radius: 6px;
+  user-select: none;
+}
+.mystery-hint {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-style: normal;
+}
+
+.pitch-choose {
+  margin-top: 1.5rem;
+}
+
+/* ── TOGGLE: flip between apps ── */
+.phone-toggle {
+  display: flex;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 50px;
+  padding: 4px;
+  gap: 4px;
+  box-shadow: var(--elevation-1);
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-brand);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.toggle-btn:hover:not(.active) {
+  background: var(--md-sys-color-outline-variant);
+}
+.toggle-btn.active {
+  background: var(--md-sys-color-on-surface);
+  color: var(--md-sys-color-surface-container);
+}
+
+.toggle-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.ic-sf { background: #1a73e8; }
+.ic-tg { background: #6d28d9; }
+
+.phone-hint {
+  text-align: center;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 360px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEGACY APP CARDS (kept for backward compatibility — unused
+   by the new index.html, but preserved in case Diara wants to
+   reintroduce a side-by-side view).
+═══════════════════════════════════════════════════════════ */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .split-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+}
 .app-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -235,13 +503,21 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-brand); font-weight: 700; color: white; font-size: 1.25rem;
 }
-.ic-sf { background: #1a73e8; }
-.ic-tg { background: #6d28d9; }
-
 .app-title { font-family: var(--font-brand); font-size: 1.25rem; font-weight: 700; }
 .app-subtitle { font-size: 0.875rem; color: var(--md-sys-color-on-surface-variant); }
 
 .card-body { padding: 1.5rem; flex-grow: 1; }
+.card-actions { padding: 0 1.5rem 1.5rem; }
+.card-actions .btn-outlined { width: 100%; }
+.app-card.selected .btn-outlined {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SHARED DATA / RESULT STYLES
+═══════════════════════════════════════════════════════════ */
 .data-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 0.5rem 0; border-bottom: 1px solid var(--md-sys-color-outline-variant);
@@ -255,18 +531,6 @@ body {
 .val-red { color: var(--semantic-error); }
 .val-warn { color: var(--semantic-warning); }
 
-.card-actions { padding: 0 1.5rem 1.5rem; }
-.btn-outlined {
-  width: 100%; padding: 10px; border-radius: 50px;
-  border: 1px solid var(--md-sys-color-outline);
-  background: transparent; font-weight: 500; cursor: pointer;
-}
-.app-card.selected .btn-outlined {
-  background: var(--md-sys-color-primary);
-  color: var(--md-sys-color-on-primary);
-  border-color: var(--md-sys-color-primary);
-}
-
 /* ── ANIMATION STAGE ── */
 .animation-stage {
   display: none;
@@ -277,7 +541,7 @@ body {
   box-shadow: var(--elevation-2);
   margin-top: 2rem;
 }
-.animation-stage.show { display: block; }
+.animation-stage.show { display: block; animation: fadeUp 0.4s ease-out; }
 .progress-track {
   height: 8px; background: var(--md-sys-color-outline-variant);
   border-radius: 4px; overflow: hidden; margin: 1.5rem auto; max-width: 400px;
@@ -301,15 +565,318 @@ body {
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+.reveal-kicker {
+  text-align: center;
+  font-family: var(--font-brand);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--md-sys-color-primary);
+  margin-bottom: 0.75rem;
+}
+.reveal-headline {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+/* ── BASELINE CARD — the honest market-rate reference ── */
+.baseline-card {
+  background: var(--md-sys-color-surface-container);
+  border: 2px dashed var(--md-sys-color-primary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.baseline-card::before {
+  content: 'BASELINE';
+  position: absolute;
+  top: -10px;
+  left: 24px;
+  background: var(--md-sys-color-surface);
+  padding: 0 8px;
+  font-family: var(--font-brand);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--md-sys-color-primary);
+}
+.baseline-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.baseline-label {
+  font-size: 0.95rem;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 0.25rem;
+}
+.baseline-value {
+  font-family: var(--font-brand);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.baseline-meta {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: right;
+}
+
+/* ── SHORTFALL STACK — bars showing what each app lost ── */
+.shortfall-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.shortfall-row {
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.shortfall-row.your-pick {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 0 0 3px var(--md-sys-color-primary-container);
+}
+
+.shortfall-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+.shortfall-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-brand);
+  font-size: 1.1rem;
+}
+.shortfall-name .toggle-dot { width: 12px; height: 12px; }
+
+.shortfall-tag {
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-family: var(--font-brand);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-left: 0.25rem;
+}
+.shortfall-tag.tag-better {
+  background: var(--semantic-success-container);
+  color: var(--semantic-success);
+}
+.shortfall-tag.tag-worse {
+  background: var(--semantic-error-container);
+  color: var(--semantic-error);
+}
+
+.shortfall-delivered {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+/* THE BAR + LOST-AMOUNT FIGURE */
+.shortfall-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.shortfall-track {
+  flex: 1;
+  display: flex;
+  height: 32px;
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.shortfall-delivered-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2d8a4e, #146c2e);
+  transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shortfall-lost-bar {
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--semantic-error),
+    var(--semantic-error) 6px,
+    #8e1d17 6px,
+    #8e1d17 12px
+  );
+  transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The "what was lost" figure — this is the emotional anchor */
+.shortfall-lost-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 130px;
+  padding-left: 0.5rem;
+  border-left: 3px solid var(--semantic-error);
+}
+.shortfall-lost-amount {
+  font-family: var(--font-brand);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--semantic-error);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.shortfall-lost-caption {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}
+
+.shortfall-explain {
+  font-size: 0.9rem;
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.5;
+}
+.shortfall-explain strong { color: var(--md-sys-color-on-surface); }
+
+/* ── SCALE PROMPT — animated transition between £500 and £2000 ── */
+.scale-prompt {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin: 2rem 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.scale-prompt-text { flex: 1; min-width: 250px; }
+.scale-prompt-text strong {
+  display: block;
+  font-family: var(--font-brand);
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+.scale-prompt-text span {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+.scale-toggle {
+  display: flex;
+  background: var(--md-sys-color-surface-container);
+  border-radius: 50px;
+  padding: 4px;
+  gap: 4px;
+  box-shadow: var(--elevation-1);
+}
+.scale-btn {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-brand);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.scale-btn.active {
+  background: var(--md-sys-color-on-surface);
+  color: var(--md-sys-color-surface-container);
+}
+
+/* ── EXPANDABLE DETAILS ── */
+.reveal-details {
+  margin-top: 1rem;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  padding-top: 1.5rem;
+}
+.reveal-details summary {
+  cursor: pointer;
+  font-family: var(--font-brand);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--md-sys-color-on-surface-variant);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  user-select: none;
+}
+.reveal-details summary::-webkit-details-marker { display: none; }
+.details-chevron {
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+.reveal-details[open] .details-chevron { transform: rotate(180deg); }
+.reveal-details-body { padding-top: 1.5rem; }
+.reveal-details-note {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--md-sys-color-on-surface-variant);
+  font-style: italic;
+  padding: 1rem;
+  background: var(--md-sys-color-surface);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--md-sys-color-outline);
+}
+
+/* Compact mobile adjustments */
+@media (max-width: 600px) {
+  .baseline-row { flex-direction: column; align-items: flex-start; }
+  .baseline-meta { text-align: left; }
+  .shortfall-bar-wrap { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  .shortfall-lost-figure {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    border-left: none;
+    border-top: 3px solid var(--semantic-error);
+    padding-left: 0;
+    padding-top: 0.5rem;
+  }
+  .scale-prompt { flex-direction: column; align-items: stretch; }
+}
+
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
 @media (max-width: 600px) { .results-grid { grid-template-columns: 1fr; } }
 
 .result-card {
   background: var(--md-sys-color-surface-container);
   border-radius: var(--radius-md); padding: 1.5rem;
-  box-shadow: var(--elevation-1); border: 2px solid transparent;
+  box-shadow: var(--elevation-1); border: 1px solid var(--md-sys-color-outline-variant);
 }
-.result-card.winner { border-color: var(--semantic-success); background: var(--semantic-success-container); }
+.result-tag {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.06);
+  font-family: var(--font-brand);
+  font-weight: 600;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
 
 .insight-box {
   background: var(--md-sys-color-primary-container);
