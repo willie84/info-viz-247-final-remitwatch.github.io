@@ -10,33 +10,30 @@
 
 <style>
   :root {
-    /* Material Design 3 Light Theme Colors */
-    --md-sys-color-background: #FFFFFF;
-    --md-sys-color-on-background: #191C1A;
-    --md-sys-color-surface: #FBFDF9;
-    --md-sys-color-surface-container: #F3F5F1;
-    --md-sys-color-surface-container-high: #E1E3DF;
+    --md-sys-color-background: #0F141A;
+    --md-sys-color-on-background: #E2E2E9;
+    --md-sys-color-surface: #161C24;
+    --md-sys-color-surface-container: #1A212A;
+    --md-sys-color-surface-container-high: #242D38;
     
-    --md-sys-color-primary: #006C4A; /* Darker green for text/lines to ensure contrast */
-    --md-sys-color-primary-container: #8EF8C0;
-    --md-sys-color-primary-track: #E1E3DF;
+    --md-sys-color-primary: #7CF4B6;
+    --md-sys-color-primary-container: #17382B;
+    --md-sys-color-primary-track: #1C2731;
     
-    --md-sys-color-secondary: #4C6357;
-    --md-sys-color-on-surface-variant: #44474E;
+    --md-sys-color-secondary: #A9B2BB;
+    --md-sys-color-on-surface-variant: #9EA8B3;
     
-    --md-sys-color-tertiary: #8A5100;
-    --md-sys-color-tertiary-container: #FFDCBE;
+    --md-sys-color-tertiary: #FFC182;
+    --md-sys-color-tertiary-container: #4A3014;
     
-    --md-sys-color-error: #BA1A1A;
-    --md-sys-color-error-container: #FFDAD6;
+    --md-sys-color-error: #FFA49D;
+    --md-sys-color-error-container: #4D1A18;
 
     --md-sys-color-coin: #FFD15C;
     --md-sys-color-coin-edge: #C29618;
     --md-sys-color-coin-text: #4D3800;
     
-    /* Softened elevation for light mode */
-    --md-sys-elevation-2: 0px 4px 8px rgba(0, 0, 0, 0.08), 0px 1px 3px rgba(0, 0, 0, 0.04);
-    
+    --md-sys-elevation-2: 0px 4px 12px rgba(0, 0, 0, 0.4), 0px 1px 3px rgba(0, 0, 0, 0.2);
     --md-sys-motion-standard: cubic-bezier(0.2, 0, 0, 1);
     --md-sys-motion-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
     --md-sys-motion-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -55,9 +52,10 @@
   .grid-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background-image: radial-gradient(var(--md-sys-color-surface-container-high) 1px, transparent 1px);
-    background-size: 40px 40px; opacity: 0.6; pointer-events: none; z-index: 0;
+    background-size: 40px 40px; opacity: 0.4; pointer-events: none; z-index: 0;
   }
 
+  /* Extra bottom padding ensures user can scroll far enough to easily trigger the zoom out */
   .snake-environment {
     position: relative;
     width: 100%;
@@ -73,9 +71,10 @@
     max-width: 800px;
     aspect-ratio: 1 / 3; 
     transition: transform 1.4s var(--md-sys-motion-bounce);
-    transform-origin: center 92%;
+    transform-origin: center 92%; /* Scales around the destination vault */
   }
 
+  /* Macro-Zoom Effect */
   .canvas.zoomed-out {
     transform: scale(0.38);
   }
@@ -98,6 +97,7 @@
   .payload-survivor { transition: transform 0.6s var(--md-sys-motion-bounce), opacity 0.4s ease; }
   #payload.deposited .payload-survivor { transform: translate(0px, 0px) scale(0) !important; opacity: 0; }
 
+  /* Giant Final Coin */
   .final-master-coin {
     opacity: 0; transform: scale(0.3); transform-origin: 400px 2200px;
     transition: opacity 0.3s ease, transform 0.8s var(--md-sys-motion-bounce);
@@ -115,6 +115,7 @@
   }
   .svg-drain.vis .desktop-connector, .final-master-coin.vis + .desktop-connector { opacity: 1; }
 
+  /* Cards */
   .beat { position: absolute; width: 0; height: 0; z-index: 3; transition: opacity 0.5s ease; }
   .card-wrapper { position: absolute; width: 300px; top: 50%; }
 
@@ -122,7 +123,7 @@
   .align-left { right: 90px; transform: translateY(-50%); }
 
   .beat-card {
-    background-color: var(--md-sys-color-surface);
+    background-color: var(--md-sys-color-surface-container);
     border-radius: 20px; padding: 24px;
     box-shadow: var(--md-sys-elevation-2);
     border: 1px solid var(--md-sys-color-surface-container-high);
@@ -131,6 +132,7 @@
   }
   .beat.vis .beat-card { opacity: 1; transform: scaleY(1) translateY(0); }
 
+  /* Zoom UI Adjustments */
   .canvas.zoomed-out .hide-on-zoom { opacity: 0; pointer-events: none; }
   .canvas.zoomed-out .final-card-wrapper { transform: scale(2.2) translate(-20px, 40px); transform-origin: left center; }
 
@@ -140,7 +142,8 @@
   .beat.vis .delay-2 { transition-delay: 0.25s; }
   .beat.vis .delay-3 { transition-delay: 0.4s; }
 
-  .md-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+  /* Typography */
+  .md-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; display: block; }
   .md-headline { font-size: 20px; font-weight: 400; color: var(--md-sys-color-on-background); line-height: 1.3; margin-bottom: 12px; }
   .md-headline em { color: var(--md-sys-color-primary); font-style: normal; font-weight: 700; }
   .md-body { font-size: 14px; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; }
@@ -153,7 +156,7 @@
   
   .btn-primary {
     display: inline-flex; align-items: center; justify-content: center;
-    background: var(--md-sys-color-primary); color: #FFFFFF; text-decoration: none;
+    background: var(--md-sys-color-primary); color: #04342C; text-decoration: none;
     font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 30px;
     margin-top: 20px; width: 100%; transition: opacity 0.2s;
   }
@@ -161,11 +164,12 @@
 
   .chip-amber { background-color: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-tertiary); }
   .chip-error { background-color: var(--md-sys-color-error-container); color: var(--md-sys-color-error); }
-  .chip-blue { background-color: #D3E3FD; color: #04306E; } 
+  .chip-blue { background-color: #0D2140; color: #82B4FF; } 
 
+  /* Flags clearly positioned outside the canvas loop */
   .geo-flag {
     position: absolute; font-size: 32px; z-index: 5;
-    background: var(--md-sys-color-surface);
+    background: var(--md-sys-color-surface-container);
     border-radius: 50%; width: 56px; height: 56px;
     display: flex; align-items: center; justify-content: center;
     box-shadow: var(--md-sys-elevation-2); border: 2px solid var(--md-sys-color-surface-container-high);
@@ -173,7 +177,7 @@
   .flag-start { top: 4.16%; left: -10%; transform: translateY(-50%); }
   .flag-end { top: 91.66%; right: -10%; transform: translateY(-50%); }
 
-  .m3-progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: var(--md-sys-color-surface-container-high); z-index: 100; }
+  .m3-progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: var(--md-sys-color-background); z-index: 100; }
   .m3-progress-bar { height: 100%; width: 0%; background: var(--md-sys-color-primary); }
 
   @media (max-width: 800px) {
@@ -209,7 +213,7 @@
           <path d="M 10 0 L 0 5 L 10 10 z" fill="var(--md-sys-color-error)" />
         </marker>
         <marker id="arrow-right-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#04306E" />
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#82B4FF" />
         </marker>
         <marker id="arrow-right-primary" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--md-sys-color-primary)" />
@@ -246,10 +250,10 @@
       </g>
 
       <g class="svg-drain" id="drain-3" style="transform-origin: 600px 1400px;">
-        <line x1="600" y1="1400" x2="600" y2="1470" stroke="#04306E" stroke-width="4" stroke-dasharray="6,6" />
-        <circle cx="600" cy="1470" r="14" fill="var(--md-sys-color-background)" stroke="#04306E" stroke-width="4"/>
+        <line x1="600" y1="1400" x2="600" y2="1470" stroke="#82B4FF" stroke-width="4" stroke-dasharray="6,6" />
+        <circle cx="600" cy="1470" r="14" fill="var(--md-sys-color-background)" stroke="#82B4FF" stroke-width="4"/>
         <g style="transform: translate(600px, 1400px);"><use href="#pound-coin" class="leaked-coin" id="leak-coin-3" /></g>
-        <line class="desktop-connector" x1="620" y1="1400" x2="680" y2="1400" stroke="#04306E" stroke-width="2" marker-end="url(#arrow-right-blue)" />
+        <line class="desktop-connector" x1="620" y1="1400" x2="680" y2="1400" stroke="#82B4FF" stroke-width="2" marker-end="url(#arrow-right-blue)" />
       </g>
 
       <g class="svg-drain" id="drain-4" style="transform-origin: 200px 1900px;">
@@ -318,7 +322,7 @@
     <div class="beat hide-on-zoom" style="left: 75%; top: 58.33%;" data-drain="drain-3" data-leak="3" data-trigger-x="600" data-trigger-y="1400">
       <div class="card-wrapper align-right">
         <div class="beat-card">
-          <span class="md-label reveal-item delay-1" style="color: #04306E">Leak 03 · Correspondent fee</span>
+          <span class="md-label reveal-item delay-1" style="color: #82B4FF">Leak 03 · Correspondent fee</span>
           <div class="md-headline reveal-item delay-2">Charged <em>between</em> banks.</div>
           <div class="md-body reveal-item delay-3">Banks routing the transfer charge each other a toll. Neither Amina nor her mother sees it. <strong>Silently reduces the amount.</strong></div>
           <div class="md-chip chip-blue reveal-item delay-3">Hidden — between banks</div>
@@ -378,6 +382,7 @@
     const rect = svgCanvas.getBoundingClientRect();
     const startTrigger = window.innerHeight / 2;
     
+    // Calculates how far the user has scrolled down the SVG Canvas
     let progress = (startTrigger - rect.top) / rect.height;
     if (progress < 0) progress = 0;
     if (progress > 1) progress = 1;
@@ -431,12 +436,21 @@
       }
     });
 
+    // --- THE MACRO ZOOM REVEAL LOGIC ---
+    // Triggered just before the final point
     if (tipPoint.y >= 2190 && !isDeposited) {
         isDeposited = true;
+        
+        // 1. Lock payload into vault
         payloadGroup.setAttribute('transform', `translate(400, 2200)`);
         payloadGroup.classList.add('deposited');
+        
+        // 2. Expand massive final coin
         finalMasterCoin.classList.add('vis');
+        
+        // 3. ZOOM OUT the entire canvas
         svgCanvas.classList.add('zoomed-out');
+        
     } else if (tipPoint.y < 2190 && isDeposited) {
         isDeposited = false;
         payloadGroup.classList.remove('deposited');
