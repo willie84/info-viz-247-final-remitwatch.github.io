@@ -29,10 +29,11 @@
 
     @media (min-width: 1000px) {
       .slide-step:nth-child(1) { width: 80%; margin-left: 0; }
-      .slide-step:nth-child(2) { width: 80%; margin-left: 5%; }
-      .slide-step:nth-child(3) { width: 80%; margin-left: 10%; }
-      .slide-step:nth-child(4) { width: 80%; margin-left: 15%; }
-      .slide-step:nth-child(5) { width: 80%; margin-left: 20%; }
+      .slide-step:nth-child(2) { width: 80%; margin-left: 4%; }
+      .slide-step:nth-child(3) { width: 80%; margin-left: 8%; }
+      .slide-step:nth-child(4) { width: 80%; margin-left: 12%; }
+      .slide-step:nth-child(5) { width: 80%; margin-left: 16%; }
+      .slide-step:nth-child(6) { width: 80%; margin-left: 20%; }
     }
 
     .insight-tag {
@@ -107,20 +108,21 @@
       <div class="insight-tag">The Scale of the Problem</div>
       <h1 class="headline-large">Amina's missing money isn't a glitch.<br><em>It's a global system.</em></h1>
       <p class="punchy-text">
-        You've seen how the fees work. Now see how they play out across millions of real transfers —
-        in Amina's corridor, across Africa, and globally.
-        The World Bank has been tracking it for years.
+        You've seen how the fees work on a single transfer. Now watch the same mechanics play out
+        across millions of real ones — in Amina's corridor, across Africa, and around the world.
+        The World Bank has been tracking every transfer for years. The pattern is consistent.
       </p>
     </div>
 
     <!-- SLIDE 1: PROVIDER TYPE -->
     <div class="slide-step">
       <div class="insight-tag">01 / The Providers</div>
-      <h2 class="block-title">Banks charge 3× more than mobile apps.</h2>
+      <h2 class="block-title">Banks charge nearly 3× more than mobile apps.</h2>
       <p class="punchy-text">
-        Just like SendFree hid its fee in a bad exchange rate, traditional commercial banks
-        average <strong>8.3% globally</strong>. Mobile operators sit near <strong>3.1%</strong> —
-        the only provider type actually meeting the UN's 3% target.
+        The kind of company you choose changes everything. Commercial banks average
+        <strong>8.3% globally</strong>. Mobile operators sit near <strong>3.1%</strong> —
+        the only provider type that comes close to the UN's 3% target. Every other type
+        sits well above it.
       </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
@@ -136,11 +138,13 @@
     <!-- SLIDE 2: UK PROVIDERS -->
     <div class="slide-step">
       <div class="insight-tag">02 / Amina's Route</div>
-      <h2 class="block-title">Brand names mean higher fees.</h2>
+      <h2 class="block-title">The names you recognize are the ones charging the most.</h2>
       <p class="punchy-text">
-        We used fictional apps on page one — but here is the real UK → Kenya data.
-        Transparent apps cost around 1%. Legacy giants like Western Union sit over 8%.
-        <strong>Same route. Same destination. Wildly different outcomes for Amina's mother.</strong>
+        On page one we used invented apps to show how fees disappear. Here are the real ones
+        flying Amina's exact route. The cheapest providers — names most people have never heard of —
+        come in around <strong>1%</strong>. Western Union and the other household brands sit
+        <strong>over 8%</strong>. Same sender. Same recipient. Same destination bank.
+        Eight times the cost.
       </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
@@ -158,9 +162,10 @@
       <div class="insight-tag">03 / The Global Toll</div>
       <h2 class="block-title">Sub-Saharan Africa pays the highest price on earth.</h2>
       <p class="punchy-text">
-        The UN target is 3%. Sub-Saharan Africa averages <strong>11.5%</strong>.
-        Every other region in the world is closer to the target than Africa.
-        This system drains capital directly from the communities that need it most.
+        Zoom out to the whole world and one region stands alone. Sub-Saharan Africa
+        averages <strong>11.5%</strong> — almost four times the UN target. Every other
+        region on the planet is closer to 3% than to Africa's number. The system extracts
+        the most from the people who can spare the least.
       </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
@@ -173,14 +178,37 @@
       </div>
     </div>
 
-    <!-- SLIDE 4: CORRIDORS TO KENYA -->
+    <!-- SLIDE 4: WHERE THE COST HIDES (SCATTER) -->
     <div class="slide-step">
-      <div class="insight-tag">04 / The Corridor Problem</div>
+      <div class="insight-tag">04 / Where the Cost Hides</div>
+      <h2 class="block-title">Two ways to take a cut — and Africa pays both.</h2>
+      <p class="punchy-text">
+        The total fee splits into two parts: the <strong>explicit fee</strong> a provider quotes
+        upfront, and the <strong>exchange rate margin</strong> — the silent markup hidden in the
+        rate itself. Most regions trade one for the other. Sub-Saharan Africa sits in the
+        top-right corner: highest upfront fee <em>and</em> highest hidden margin.
+        Nowhere else does both at once.
+      </p>
+      <div class="chart-container">
+        <div class="chart-iframe-wrapper">
+          <iframe
+            src="https://public.tableau.com/views/Book1_17777798762820/hypothesis-5?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no"
+            width="100%" height="560"
+            title="Explicit Fee vs Exchange Rate Margin by Region">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: CORRIDORS TO KENYA -->
+    <div class="slide-step">
+      <div class="insight-tag">05 / The Corridor Problem</div>
       <h2 class="block-title">Where you send <em>from</em> dictates the price.</h2>
       <p class="punchy-text">
-        Amina sends from London — one of the cheaper routes into Kenya at 4.9%.
-        But Tanzania → Kenya, an intra-African corridor, averages <strong>20.98%</strong>.
-        The assumption that sending within Africa is cheaper is simply wrong.
+        Amina sends from London — at <strong>4.9%</strong>, one of the cheaper routes into Kenya.
+        Now look at Tanzania → Kenya, an intra-African corridor: <strong>20.98%</strong>.
+        The instinct that sending money within Africa should be cheaper than sending it from
+        Europe turns out to be exactly backwards. Distance isn't the problem. Competition is.
       </p>
       <div class="chart-container">
         <div class="chart-iframe-wrapper">
@@ -201,8 +229,9 @@
     <div class="feedback-banner">
       <h3>Help us improve RemitWatch</h3>
       <p>
-        You've completed the full experience — Amina's story, the fee explainer, and the global data.
-        3 minutes of feedback helps us make this clearer for the next person.
+        You've walked the whole path — Amina's story, how the fees disappear, and the global
+        data behind it. Three minutes of feedback helps us make the next version sharper
+        for the next person who finds this.
       </p>
       <div class="btn-group">
         <a
